@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+{% block main_content %}
+    <div class="wrap-content">
+        <div class="movie">
+            <div class="row type">
+                <div class="title">
+                    <center><h2>电商产品数据分析</h2></center>
+                </div>
+            </div>
+            <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="media">
+                        <div class="media-body">
+
+                            <!-- 评分分布 -->
+                            <div id="ert" style="width: 800px;height: 400px;left: 0;right: 0">
+                                <script type="text/javascript">
+
+                                    function showComment(){
+                                        $.ajax({
+                                            url: '/comment_analysis/',
+                                            type: 'GET',
+                                            success: function (result) {
+                                                  var myChart = echarts.init(document.getElementById('ert'));
+
+                                                  var option = {
+                                                    title: {
+                                                              text: '评价排名前10的店铺',
+                                                              textStyle: {
+                                                                    color: 'black', // 标题文字颜色
+
+                                                                },
+                                                              left: 'center',
+                                                                 textStyle: {
+                                                                    color: 'black', // 标题文字颜色
+
+                                                                 },
+                                                                 top: '2%', // 标题距离容器顶部的距离
+                                                            },
+                                                    grid: {
+                                                        left: '3%',
+                                                        right: '4%',
+                                                        bottom: '3%',
+                                                        containLabel: true
+                                                    },
+                                                    tooltip: {},
+                                                    xAxis: {
+                                                      data:  result.map(data => data.key),
+                                                      axisLabel: {
+                                                          textStyle: {
+                                                              color: 'black' // 设置x轴文字颜色为白色
+                                                          },
+                                                          interval: 0, // 显示所有刻度
+                                                          rotate: 40
+                                                      }
+                                                    },
+                                                    yAxis: {
+                                                        axisLabel: {
+                                                              textStyle: {
+                                                                  color: 'black' // 设置x轴文字颜色为白色
+                                                              }
+                                                        }
+                                                    },
+                                                    series: [
+                                                      {
+                                                        name: '数量',
+                                                        type: 'bar',
+                                                        data: result.map(data => data.value),
+                                                        itemStyle: {
+                                                            color: function() {
+                                                                return 'rgb(' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ')';
+                                                            }
+                                                        }
+                                                      }
+                                                    ]
+                                                  };
+
+                                                  myChart.setOption(option);
+                                            },
+                                            fail: function (xhr, textStatus, errorThrown) {
+                                                alert('request failed');
+                                            },
+                                            error: function (jqXHR, exception) {
+                                                console.log(jqXHR.status);
+                                                console.log(exception);
+                                            }
+                                        });
+                                    }
+
+                                    showComment();
+                                </script>
+                            </div>
+
+                            <!-- 标签统计 -->
+                            <div id="ert2" style="width: 800px;height: 400px;left: 0;right: 0">
+                                <script type="text/javascript">
+
+                                    function showTags(){
+                                        $.ajax({
+                                            url: '/tags_analysis/',
+                                            type: 'GET',
+                                            success: function (result) {
+                                                  var myChart = echarts.init(document.getElementById('ert2'));
+
+                                                    option = {
+                                                      title: {
+                                                        text: '各种电商产品标签的数量统计',
+                                                        left: 'center',
+                                                         textStyle: {
+                                                            color: 'black', // 标题文字颜色
+
+                                                         },
+                                                         top: '10%', // 标题距离容器顶部的距离
+                                                      },
+                                                      tooltip: {
+                                                        trigger: 'item',
+                                                        formatter: '{a} <br/>{b} : {c} ({d}%)'
+                                                      },
+                                                      legend: {
+                                                        type: 'scroll',
+                                                        orient: 'vertical',
+                                                        right: '20%',
+                                                        top: '15%',
+                                                        bottom: 20,
+                                                        data: result.map(data => data.name),
+                                                        textStyle: {
+                                                            fontSize: 16,
+                                                            color: 'black',
+                                                        }
+                                                      },
+                                                      series: [
+                                                        {
+                                                          name: '标签',
+                                                          type: 'pie',
+                                                          radius: '70%',
+                                                          center: ['40%', '50%'],
+                                                          top: '25%',
+                                                          data: result,
+                                                            label: {
+                                                                fontSize: 18,
+                                                                color:'black'
+                                                            }
+                                                        }
+                                                      ]
+                                                    };
+
+                                                  myChart.setOption(option);
+                                            },
+                                            fail: function (xhr, textStatus, errorThrown) {
+                                                alert('request failed');
+                                            },
+                                            error: function (jqXHR, exception) {
+                                                console.log(jqXHR.status);
+                                                console.log(exception);
+                                            }
+                                        });
+                                    }
+
+                                    showTags();
+                                </script>
+                            </div>
+
+                            <!-- 上映年份及电商产品数据 -->
+                            <div id="ert3" style="width: 800px;height: 700px;left: 0;right: 0">
+                                <script type="text/javascript">
+
+                                    function showMovieYears(){
+                                        $.ajax({
+                                            url: '/years_analysis/',
+                                            type: 'GET',
+                                            success: function (result) {
+                                                  var myChart = echarts.init(document.getElementById('ert3'));
+
+                                                  option = {
+                                                      title: {
+                                                        text: '不同电商产品标签的平均价格统计',
+                                                          left: 'center',
+                                                         textStyle: {
+                                                            color: 'black', // 标题文字颜色
+
+                                                         },
+                                                         top: '10%', // 标题距离容器顶部的距离
+                                                      },
+                                                      tooltip: {
+                                                        trigger: 'axis',
+                                                        axisPointer: {
+                                                          type: 'shadow'
+                                                        }
+                                                      },
+                                                      legend: {},
+                                                      grid: {
+                                                        left: '3%',
+                                                        right: '4%',
+                                                        bottom: '3%',
+                                                          top:'20%',
+                                                        containLabel: true
+                                                      },
+                                                      xAxis: {
+                                                        type: 'value',
+                                                        boundaryGap: [0, 0.01],
+                                                      },
+                                                      yAxis: {
+                                                        type: 'category',
+                                                        data: result.map(data => data.key),
+                                                         axisLabel: {
+                                                              textStyle: {
+                                                                  color: 'black', // 设置x轴文字颜色为白色
+                                                                  fontSize: 16
+                                                              }
+                                                        }
+                                                      },
+                                                      series: [
+                                                        {
+                                                          type: 'bar',
+                                                          data: result.map(data => data.value),
+                                                          barCategoryGap: '30%', // 设置柱子之间的间距
+                                                          itemStyle: {
+                                                            color: function() {
+                                                                return 'rgb(' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ')';
+                                                            }
+                                                        }
+                                                        }
+                                                      ]
+                                                    };
+
+                                                  myChart.setOption(option);
+                                            },
+                                            fail: function (xhr, textStatus, errorThrown) {
+                                                alert('request failed');
+                                            },
+                                            error: function (jqXHR, exception) {
+                                                console.log(jqXHR.status);
+                                                console.log(exception);
+                                            }
+                                        });
+                                    }
+
+                                    showMovieYears();
+                                </script>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

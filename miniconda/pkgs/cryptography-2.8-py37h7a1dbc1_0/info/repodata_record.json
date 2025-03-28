@@ -1,0 +1,31 @@
+{
+  "build": "py37h7a1dbc1_0",
+  "build_number": 0,
+  "channel": "https://repo.anaconda.com/pkgs/main/win-64",
+  "constrains": [],
+  "depends": [
+    "asn1crypto >=0.21.0",
+    "cffi >=1.8",
+    "idna >=2.1",
+    "openssl >=1.1.1d,<1.1.2a",
+    "python >=3.7,<3.8.0a0",
+    "six >=1.4.1",
+    "vc >=14.1,<15.0a0",
+    "vs2015_runtime >=14.16.27012,<15.0a0"
+  ],
+  "features": "",
+  "fn": "cryptography-2.8-py37h7a1dbc1_0.conda",
+  "legacy_bz2_md5": "7be167abd5795883dabc4a9bde5dcfed",
+  "legacy_bz2_size": 584100,
+  "license": "Apache 2.0 or BSD 3-Clause, PSF 2",
+  "license_family": "BSD",
+  "md5": "b8f1d6065679f156745479f15ec5c880",
+  "name": "cryptography",
+  "sha256": "20e406df4fe3d59c315c0539c023f7cb93b1f0b80e34d294811fdcd009d7fd2e",
+  "size": 521127,
+  "subdir": "win-64",
+  "timestamp": 1571689644944,
+  "track_features": "",
+  "url": "https://repo.anaconda.com/pkgs/main/win-64/cryptography-2.8-py37h7a1dbc1_0.conda",
+  "version": "2.8"
+}

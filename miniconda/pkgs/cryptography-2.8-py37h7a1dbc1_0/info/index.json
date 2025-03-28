@@ -1,0 +1,22 @@
+{
+  "arch": "x86_64",
+  "build": "py37h7a1dbc1_0",
+  "build_number": 0,
+  "depends": [
+    "asn1crypto >=0.21.0",
+    "cffi >=1.8",
+    "idna >=2.1",
+    "openssl >=1.1.1d,<1.1.2a",
+    "python >=3.7,<3.8.0a0",
+    "six >=1.4.1",
+    "vc >=14.1,<15.0a0",
+    "vs2015_runtime >=14.16.27012,<15.0a0"
+  ],
+  "license": "Apache 2.0 or BSD 3-Clause, PSF 2",
+  "license_family": "BSD",
+  "name": "cryptography",
+  "platform": "win",
+  "subdir": "win-64",
+  "timestamp": 1571689644944,
+  "version": "2.8"
+}

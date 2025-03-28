@@ -1,0 +1,12 @@
+{
+  "arch": "x86_64",
+  "build": "0",
+  "build_number": 0,
+  "depends": [],
+  "license": "MPL 2.0",
+  "name": "ca-certificates",
+  "platform": "win",
+  "subdir": "win-64",
+  "timestamp": 1580397490200,
+  "version": "2020.1.1"
+}

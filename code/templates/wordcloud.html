@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block main_content %}
+    <div class="wrap-content">
+        <div class="movie">
+            <div class="row type">
+                <div class="title">
+                    <center><h2>词云分析</h2></center>
+                </div>
+            </div>
+            <div class="row">
+                {% load static %}
+                <div class="iframe-container">
+                <iframe src="{% static wordcloud_file %}" width="800" height="600" scrolling="no" style="background-color: white;text-align: left;"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<style>
+   .iframe-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+   }
+</style>
+
+{% endblock %}
+

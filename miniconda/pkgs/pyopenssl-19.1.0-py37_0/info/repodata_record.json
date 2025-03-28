@@ -1,0 +1,26 @@
+{
+  "build": "py37_0",
+  "build_number": 0,
+  "channel": "https://repo.anaconda.com/pkgs/main/win-64",
+  "constrains": [],
+  "depends": [
+    "cryptography >=2.8",
+    "python >=3.7,<3.8.0a0",
+    "six >=1.5.2"
+  ],
+  "features": "",
+  "fn": "pyopenssl-19.1.0-py37_0.conda",
+  "legacy_bz2_md5": "c0221b9b688f770232a99f066aeb89f2",
+  "legacy_bz2_size": 89318,
+  "license": "Apache 2.0",
+  "license_family": "Apache",
+  "md5": "79ec4217f8282d6e318b6c26753dcd7c",
+  "name": "pyopenssl",
+  "sha256": "e16b6f2a6651fe6993b69ca86fe14b8a2b5c272ce18b58eb0b8396efab3ec8d3",
+  "size": 93353,
+  "subdir": "win-64",
+  "timestamp": 1574266078964,
+  "track_features": "",
+  "url": "https://repo.anaconda.com/pkgs/main/win-64/pyopenssl-19.1.0-py37_0.conda",
+  "version": "19.1.0"
+}

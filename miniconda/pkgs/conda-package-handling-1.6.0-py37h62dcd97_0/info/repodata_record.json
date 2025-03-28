@@ -1,0 +1,28 @@
+{
+  "build": "py37h62dcd97_0",
+  "build_number": 0,
+  "channel": "https://repo.anaconda.com/pkgs/main/win-64",
+  "constrains": [],
+  "depends": [
+    "python >=3.7,<3.8.0a0",
+    "six",
+    "tqdm",
+    "vc >=14.1,<15.0a0",
+    "vs2015_runtime >=14.16.27012,<15.0a0"
+  ],
+  "features": "",
+  "fn": "conda-package-handling-1.6.0-py37h62dcd97_0.conda",
+  "legacy_bz2_md5": "e439ed0fbff629592c6c9fafeb81dc3d",
+  "legacy_bz2_size": 687826,
+  "license": "BSD-3-Clause",
+  "license_family": "BSD",
+  "md5": "4a76da24174884b4d19e637e65d3a8bd",
+  "name": "conda-package-handling",
+  "sha256": "c78d6ea800c3220020a944fd879f0aac59ae9ed671ea402e6f883d3bcd77c7cb",
+  "size": 625765,
+  "subdir": "win-64",
+  "timestamp": 1569013614441,
+  "track_features": "",
+  "url": "https://repo.anaconda.com/pkgs/main/win-64/conda-package-handling-1.6.0-py37h62dcd97_0.conda",
+  "version": "1.6.0"
+}

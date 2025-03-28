@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>看板-跨境电商产品推荐与展示系统</title>
+  <link rel="stylesheet" href="{% static 'css/index.css' %}">
+</head>
+
+<body>
+  <header>
+    <h1>跨境电商产品推荐与展示系统</h1>
+    <div class="showTime">当前时间：<span></span></div>
+  </header>
+  <section class="mainbox">
+    <div class="column">
+      <div class="panel bar" style="height: 48%;">
+        <h2>
+          评价量排名前10名的店铺
+        </h2>
+        <div class="chart" style="height: 280px;"></div>
+        <div class="panel-footer"></div>
+      </div>
+      <div class="panel pie">
+        <h2>热门电商产品标签电商产品量统计</h2>
+        <div class="chart"></div>
+        <div class="panel-footer"></div>
+      </div>
+    </div>
+    <div class="column">
+      <div class="no">
+        <div class="no-hd">
+          <ul>
+            <li><span id="totalMovie"></span></li>
+            <li><span id="totalTag"></span></li>
+            <li><span id="totalSelf"></span></li>
+            <li><span id="totalNotSelf"></span></li>
+          </ul>
+        </div>
+        <div class="no-bd">
+          <ul>
+            <li>电商产品总量</li>
+            <li>电商产品标签总量</li>
+              <li>自营店铺</li>
+              <li>非自营店铺</li>
+          </ul>
+        </div>
+      </div>
+         <div class="column" style="margin-top: 10px;">
+      <div class="panel line1">
+        <h2>不同电商产品标签的平均价格</h2>
+        <div class="chart"></div>
+        <div class="panel-footer"></div>
+      </div>
+      <div class="panel pie1">
+        <h2>自营店铺和非自营店铺比例</h2>
+        <div class="chart"></div>
+        <div class="panel-footer"></div>
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <script src="{% static 'js/flexible.js' %}"></script>
+  <script src="{% static 'js/jquery-2.1.1.min.js' %}"></script>
+ <script src="{% static 'js/echarts.min.js' %}"></script>
+  <script src="{% static 'js/world.js' %}"></script>
+  <script src="{% static 'js/index.js' %}"></script>
+
+  <script>
+    (function (fn) {
+      fn();
+      setInterval(fn, 1000);
+    })(function () {
+     var dt = new Date();
+      document.querySelector(".showTime span").innerHTML =
+        dt.getDate() + "日-" +
+        dt.getHours() + "时" +
+        dt.getMinutes() + "分" +
+        dt.getSeconds() + "秒";
+    });
+  </script>
+</body>
+
+</html>

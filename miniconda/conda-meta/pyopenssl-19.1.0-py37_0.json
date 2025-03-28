@@ -1,0 +1,61 @@
+{
+  "build": "py37_0",
+  "build_number": 0,
+  "channel": "https://repo.anaconda.com/pkgs/main/win-64",
+  "constrains": [],
+  "depends": [
+    "cryptography >=2.8",
+    "python >=3.7,<3.8.0a0",
+    "six >=1.5.2"
+  ],
+  "extracted_package_dir": "E:\\project\\miniconda\\pkgs\\pyopenssl-19.1.0-py37_0",
+  "features": "",
+  "files": [
+    "Lib/site-packages/OpenSSL/SSL.py",
+    "Lib/site-packages/OpenSSL/__init__.py",
+    "Lib/site-packages/OpenSSL/__pycache__/SSL.cpython-37.pyc",
+    "Lib/site-packages/OpenSSL/__pycache__/__init__.cpython-37.pyc",
+    "Lib/site-packages/OpenSSL/__pycache__/_util.cpython-37.pyc",
+    "Lib/site-packages/OpenSSL/__pycache__/crypto.cpython-37.pyc",
+    "Lib/site-packages/OpenSSL/__pycache__/debug.cpython-37.pyc",
+    "Lib/site-packages/OpenSSL/__pycache__/rand.cpython-37.pyc",
+    "Lib/site-packages/OpenSSL/__pycache__/tsafe.cpython-37.pyc",
+    "Lib/site-packages/OpenSSL/__pycache__/version.cpython-37.pyc",
+    "Lib/site-packages/OpenSSL/_util.py",
+    "Lib/site-packages/OpenSSL/crypto.py",
+    "Lib/site-packages/OpenSSL/debug.py",
+    "Lib/site-packages/OpenSSL/rand.py",
+    "Lib/site-packages/OpenSSL/tsafe.py",
+    "Lib/site-packages/OpenSSL/version.py",
+    "Lib/site-packages/pyOpenSSL-19.1.0.dist-info/INSTALLER",
+    "Lib/site-packages/pyOpenSSL-19.1.0.dist-info/LICENSE",
+    "Lib/site-packages/pyOpenSSL-19.1.0.dist-info/METADATA",
+    "Lib/site-packages/pyOpenSSL-19.1.0.dist-info/RECORD",
+    "Lib/site-packages/pyOpenSSL-19.1.0.dist-info/WHEEL",
+    "Lib/site-packages/pyOpenSSL-19.1.0.dist-info/top_level.txt"
+  ],
+  "fn": "pyopenssl-19.1.0-py37_0.conda",
+  "legacy_bz2_md5": "c0221b9b688f770232a99f066aeb89f2",
+  "legacy_bz2_size": 89318,
+  "license": "Apache 2.0",
+  "license_family": "Apache",
+  "link": {
+    "source": "E:\\project\\miniconda\\pkgs\\pyopenssl-19.1.0-py37_0",
+    "type": 1
+  },
+  "md5": "79ec4217f8282d6e318b6c26753dcd7c",
+  "name": "pyopenssl",
+  "package_tarball_full_path": "E:\\project\\miniconda\\pkgs\\pyopenssl-19.1.0-py37_0.conda",
+  "paths_data": {
+    "paths": [],
+    "paths_version": 1
+  },
+  "requested_spec": "pyopenssl==19.1.0=py37_0",
+  "sha256": "e16b6f2a6651fe6993b69ca86fe14b8a2b5c272ce18b58eb0b8396efab3ec8d3",
+  "size": 93353,
+  "subdir": "win-64",
+  "timestamp": 1574266078964,
+  "track_features": "",
+  "url": "https://repo.anaconda.com/pkgs/main/win-64/pyopenssl-19.1.0-py37_0.conda",
+  "version": "19.1.0"
+}

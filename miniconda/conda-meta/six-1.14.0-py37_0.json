@@ -1,0 +1,45 @@
+{
+  "build": "py37_0",
+  "build_number": 0,
+  "channel": "https://repo.anaconda.com/pkgs/main/win-64",
+  "constrains": [],
+  "depends": [
+    "python >=3.7,<3.8.0a0"
+  ],
+  "extracted_package_dir": "E:\\project\\miniconda\\pkgs\\six-1.14.0-py37_0",
+  "features": "",
+  "files": [
+    "Lib/site-packages/__pycache__/six.cpython-37.pyc",
+    "Lib/site-packages/six-1.14.0.dist-info/INSTALLER",
+    "Lib/site-packages/six-1.14.0.dist-info/LICENSE",
+    "Lib/site-packages/six-1.14.0.dist-info/METADATA",
+    "Lib/site-packages/six-1.14.0.dist-info/RECORD",
+    "Lib/site-packages/six-1.14.0.dist-info/WHEEL",
+    "Lib/site-packages/six-1.14.0.dist-info/top_level.txt",
+    "Lib/site-packages/six.py"
+  ],
+  "fn": "six-1.14.0-py37_0.conda",
+  "legacy_bz2_md5": "f5d389eb2224669447eedf93fc2cf4bd",
+  "legacy_bz2_size": 27920,
+  "license": "MIT",
+  "license_family": "MIT",
+  "link": {
+    "source": "E:\\project\\miniconda\\pkgs\\six-1.14.0-py37_0",
+    "type": 1
+  },
+  "md5": "4cf8fbb068a0789f69e5eb2688b51be2",
+  "name": "six",
+  "package_tarball_full_path": "E:\\project\\miniconda\\pkgs\\six-1.14.0-py37_0.conda",
+  "paths_data": {
+    "paths": [],
+    "paths_version": 1
+  },
+  "requested_spec": "six==1.14.0=py37_0",
+  "sha256": "e62c11761cb5b58f6c19dd14c8a9185b9565ee667db8e8e8f7f57d9461a7f4e6",
+  "size": 27953,
+  "subdir": "win-64",
+  "timestamp": 1580150027456,
+  "track_features": "",
+  "url": "https://repo.anaconda.com/pkgs/main/win-64/six-1.14.0-py37_0.conda",
+  "version": "1.14.0"
+}

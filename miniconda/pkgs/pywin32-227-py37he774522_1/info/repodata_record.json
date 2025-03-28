@@ -1,0 +1,25 @@
+{
+  "build": "py37he774522_1",
+  "build_number": 1,
+  "channel": "https://repo.anaconda.com/pkgs/main/win-64",
+  "constrains": [],
+  "depends": [
+    "python >=3.7,<3.8.0a0",
+    "vc >=14.1,<15.0a0",
+    "vs2015_runtime >=14.16.27012,<15.0a0"
+  ],
+  "features": "",
+  "fn": "pywin32-227-py37he774522_1.conda",
+  "legacy_bz2_md5": "4f5edddb3acafdf5635112344e5c506c",
+  "legacy_bz2_size": 9972636,
+  "license": "PSF",
+  "md5": "a7c4cce1108f9dd17ff5a69883ae90f1",
+  "name": "pywin32",
+  "sha256": "fe463325bd70e7b6d476242a972689193a4459c34aa67f6558d9ce10307d1371",
+  "size": 5808297,
+  "subdir": "win-64",
+  "timestamp": 1579102390266,
+  "track_features": "",
+  "url": "https://repo.anaconda.com/pkgs/main/win-64/pywin32-227-py37he774522_1.conda",
+  "version": "227"
+}

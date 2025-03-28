@@ -1,0 +1,21 @@
+{
+  "build": "0",
+  "build_number": 0,
+  "channel": "https://repo.anaconda.com/pkgs/main/win-64",
+  "constrains": [],
+  "depends": [],
+  "features": "",
+  "fn": "ca-certificates-2020.1.1-0.conda",
+  "legacy_bz2_md5": "c3f7a3f15e222d3381f3758fdde38e55",
+  "legacy_bz2_size": 168656,
+  "license": "MPL 2.0",
+  "md5": "33a8b64bf11a9d9b003c7583a85f3be2",
+  "name": "ca-certificates",
+  "sha256": "2a8375c897b34bba93470b54220d78ce82eda697bb79ff5a1357c3a02ef67266",
+  "size": 128250,
+  "subdir": "win-64",
+  "timestamp": 1580397490200,
+  "track_features": "",
+  "url": "https://repo.anaconda.com/pkgs/main/win-64/ca-certificates-2020.1.1-0.conda",
+  "version": "2020.1.1"
+}

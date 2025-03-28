@@ -1,0 +1,22 @@
+
+
+
+
+pip install -r requirements.txt -i https://pypi.doubanio.com/simple
+
+1、右上角按钮启动
+或者输入启动命令：
+python manage.py runserver
+
+2、浏览器打开网址
+http://127.0.0.1:8000/
+
+账号  admins   密码 admins
+
+
+
+
+
+
+
+
