@@ -94,40 +94,53 @@
         </div>
     </div>
     <div style="margin: 20px 20px 20px 0px" class="movie">
-        <div class="clearfix">
-            <form role="form" action="{% url 'comment' product.id %}" method="post">
-                {% csrf_token %}
-                <div class="form-group">
-                    <input placeholder="快来说说点什么吧" class="form-control" name="comment" cols="10" rows="10">
+        <div class="comments-container">
+            <!-- 评论输入框 -->
+            <div class="comment-form">
+                <form action="{% url 'comment' product.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="input-wrapper">
+                        <textarea class="comment-input" name="comment" placeholder="分享你的想法..." rows="3"></textarea>
+                        <button type="submit" class="comment-submit">
+                            <i class="fas fa-paper-plane"></i>
+                            发表评论
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 评论列表 -->
+            <div class="comments-list">
+                <h2 class="comments-title">
+                    <i class="far fa-comments"></i>
+                    评论（{{ comments|length }}）
+                </h2>
+                {% for comment in comments %}
+                <div class="comment-item">
+                    <div class="comment-avatar">
+                        <img src='{{ comment.user.email|gravatar:"48" }}' alt="用户头像">
+                    </div>
+                    <div class="comment-content">
+                        <div class="comment-header">
+                            <span class="comment-author">{{ comment.user.username }}</span>
+                            <span class="comment-time">{{ comment.create_time|date:"Y-m-d H:i" }}</span>
+                        </div>
+                        <div class="comment-text">{{ comment.content }}</div>
+                        <div class="comment-actions">
+                            <a href="{% url 'like_comment' comment.id product.id %}" 
+                               class="like-btn {% if user in comment.likes.all %}liked{% endif %}">
+                                <i class="far {% if user in comment.likes.all %}fas{% endif %} fa-heart"></i>
+                                <span>{{ comment.likecomment_set.count }}</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <button type="submit" style="float: right;" class="btn-lg btn-success">提交评论</button>
+                {% empty %}
+                <div class="no-comments">
+                    <i class="far fa-comment-dots"></i>
+                    <p>暂无评论，来说说你的看法吧～</p>
                 </div>
-            </form>
-        </div>
-        <div>
-            <div>
-                <h2 style="border-bottom: dashed #fcab2b 1px; padding-bottom: 10px">评论</h2>
-                <div class="item-list">
-                    <ul>
-                        {% for i in comments %}
-                            <li class="list-item">
-                                <div class="avartar">
-                                    <a><img src='{{ request.user.email|gravatar:"75" }}'> </a>
-                                </div>
-                                <div class="list-info">
-                                    <p>{{ i.content }}</p>
-                                    {{ i.user.username }} 发表于{{ i.create_time }} 推荐
-                                </div>
-                                {#                                    {% if  i.user | is_like:i.user.id %}#}
-                                {#                                        <a href="{% url 'unlike_comment' i.id movie.id %}" class="recommend-link"><span class="fa fa-lg fa-thumbs-up"#}
-                                {#                                    {% else %}#}
-                                <a href="{% url 'like_comment' i.id product.id %}" class="recommend-link"><span class="fa fa-lg fa-thumbs-up">({{ i.likecomment_set.count }})</span></a>
-                                {#                                    {% endif %}#}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -135,33 +148,32 @@
 {% endblock %}
 
 {% block bottom-js %}
-    <script>
-        function get_item_recommend() {
-            $.ajax({
-                url: '/item_recommend/',
-                type: 'GET',
-                success: function (result) {
-                    var html = "";
-                    var array_length = result.length;
-                    for (var i = 0; i < array_length; i++) {
-                        html += `<div class="col-1-3"><div class="wrap-col">` +
-                            `<a href="/product/${result[i].id}"><img src="${result[i].image_link}"/></a>` +
-                            `<a href="/product/${result[i].id}" title="${result[i].name}"><h3>${result[i].name.substring(0, 20)}</h3></a></div></div>`;
-                    }
-                    $('#item-recommend').html(html);
-                },
-                fail: function (xhr, textStatus, errorThrown) {
-                    alert('request failed');
-                },
-                error: function (jqXHR, exception) {
-                    console.log(jqXHR.status);
-                    console.log(exception);
+<script>
+    function get_item_recommend() {
+        // 从页面上下文获取当前商品ID 
+        var current_product_id = "{{ product.id }}";  // 使用Django模板变量
+        console.log("Current product ID:", current_product_id); // 调试输出
+        
+        $.ajax({
+            url: '/item_recommend/',
+            type: 'GET',
+            data: {
+                'product_id': current_product_id  // 确保参数名匹配
+            },
+            success: function(result) {
+                var html = "";
+                var array_length = result.length;
+                for (var i = 0; i < array_length; i++) {
+                    html += `<div class="col-1-3"><div class="wrap-col">` +
+                        `<a href="/product/${result[i].id}"><img src="${result[i].image_link}"/></a>` +
+                        `<a href="/product/${result[i].id}" title="${result[i].name}"><h3>${result[i].name.substring(0, 20)}</h3></a></div></div>`;
                 }
-            });
-        }
+                $('#item-recommend').html(html);
+            }
+        });
+    }
 
-        get_item_recommend();
-    </script>
-
-
+    // 页面加载完成后立即调用
+    get_item_recommend();
+</script>
 {% endblock %}

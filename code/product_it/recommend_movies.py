@@ -8,7 +8,7 @@ django.setup()
 from product.models import *
 from math import sqrt, pow
 import operator
-from django.db.models import Subquery,Q,Count
+from django.db.models import Subquery, Q, Count
 
 
 # from django.shortcuts import render,render_to_response
@@ -74,7 +74,7 @@ class UserCf:
             for movies, scores in self.all_user[user].items():  # 推荐的用户的电商产品列表
                 if movies not in self.all_user[username].keys():  # 当前username没有看过
                     if movies not in recommend.keys():  # 添加到推荐列表中
-                        recommend[movies] = scores*score
+                        recommend[movies] = scores * score
         # 对推荐的结果按照电商产品
         # 浏览次数排序
         return sorted(recommend.items(), key=operator.itemgetter(1), reverse=True)
@@ -82,105 +82,155 @@ class UserCf:
 
 # 基于用户的推荐
 def recommend_by_user_id(user_id):
-    user_prefer = UserTagPrefer.objects.filter(user_id=user_id).order_by('-score').values_list('tag_id', flat=True)
+    print("\n===== 基于用户的商品推荐 =====")
+    print(f"为用户 {user_id} 推荐商品...")
+    
+    # 1. 获取用户偏好
+    user_prefer = UserTagPrefer.objects.filter(user_id=user_id).order_by('-score')
     current_user = User.objects.get(id=user_id)
-    # 如果当前用户没有打分 则看是否选择过标签，选过的话，就从标签中找
-    # 没有的话，就按照浏览度推荐15个
+    
+    # 2. 用户未评分情况处理 
     if current_user.rate_set.count() == 0:
-        if len(user_prefer) != 0:
-            product_list = Product.objects.filter(tags__in=user_prefer)[:15]
+        print("\n该用户暂无评分记录")
+        if user_prefer.exists():
+            print("基于用户标签偏好进行推荐:")
+            # 基于用户标签偏好进行推荐
+            tag_weights = {p.tag_id: p.score for p in user_prefer}
+            products = Product.objects.all()
+            weighted_products = []
+            
+            for product in products:
+                score = 0
+                for tag in product.tags.all():
+                    score += tag_weights.get(tag.id, 0)
+                if score > 0:
+                    weighted_products.append((score, product))
+            
+            weighted_products.sort(key=lambda x: (-x[0], -x[1].collect.count()))
+            recommended = [p[1] for p in weighted_products[:15]]
         else:
-            product_list = Product.objects.order_by("-num")[:15]
-        return product_list
-    # 选取评分最多的10个用户
-    users_rate = Rate.objects.values('user').annotate(mark_num=Count('user')).order_by('-mark_num')
-    user_ids = [user_rate['user'] for user_rate in users_rate]
-    user_ids.append(user_id)
-    users = User.objects.filter(id__in=user_ids)#users 为评分最多的10个用户
-    all_user = {}
-    for user in users:
-        rates = user.rate_set.all()#查出10名用户的数据
-        rate = {}
-        # 用户有给电商产品打分 在rate和all_user中进行设置
-        if rates:
-            for i in rates:
-                rate.setdefault(str(i.product.id), i.mark)#填充电商产品数据
-            all_user.setdefault(user.username, rate)
-        else:
-            # 用户没有为电商产品打过分，设为0
-            all_user.setdefault(user.username, {})
+            print("无标签偏好,返回热门商品:")
+            recommended = Product.objects.annotate(
+                weight=Count('collect') + Count('rate')
+            ).order_by('-weight')[:15]
 
-    user_cf = UserCf(all_user=all_user)
-    recommend_list = [each[0] for each in user_cf.recommend(current_user.username, 15)]
-    product_list = list(Product.objects.filter(id__in=recommend_list).order_by("-num")[:15])
-    other_length = 15 - len(product_list)
-    if other_length > 0:
-        fix_list = Product.objects.filter(~Q(rate__user_id=user_id)).order_by('-collect')
-        for fix in fix_list:
-            if fix not in product_list:
-                product_list.append(fix)
-            if len(product_list) >= 15:
-                break
-    return product_list
+        for i, product in enumerate(recommended, 1):
+            print(f"\n{i}. {product.name}")
+            print(f"   价格: ¥{product.price}")
+            print(f"   店铺: {product.shop_name}")
+            print(f"   评论数: {product.d_rate_nums}")
+            print(f"   标签: {[t.name for t in product.tags.all()]}")
+        return recommended
+
+    # 3. 获取相似用户
+    similar_users = User.objects.filter(
+        rate__product__in=current_user.rate_set.values('product')
+    ).annotate(
+        common_count=Count('rate__product')
+    ).filter(
+        common_count__gte=2  # 至少有2个共同评分
+    ).order_by('-common_count')[:10]
+
+    # 4. 计算用户相似度并加权推荐
+    user_cf = UserCf(all_user={})
+    recommendations = {}
+    
+    for similar_user in similar_users:
+        similarity = user_cf.pearson(
+            dict(current_user.rate_set.values_list('product_id', 'mark')),
+            dict(similar_user.rate_set.values_list('product_id', 'mark'))
+        )
+        
+        if similarity <= 0:
+            continue
+            
+        # 获取相似用户评分高的商品
+        for rate in similar_user.rate_set.filter(mark__gte=4):
+            if rate.product_id not in recommendations:
+                recommendations[rate.product_id] = 0
+            recommendations[rate.product_id] += similarity * rate.mark
+
+    # 5. 结合商品属性进行最终排序
+    recommended_products = Product.objects.filter(id__in=recommendations.keys())
+    weighted_recommendations = []
+    
+    for product in recommended_products:
+        base_score = recommendations[product.id]
+        # 考虑商品的收藏数和评分
+        final_score = base_score * (1 + 0.1 * product.collect.count() + 0.1 * product.rate_set.count())
+        weighted_recommendations.append((final_score, product))
+
+    weighted_recommendations.sort(key=lambda x: -x[0])
+    
+    print("\n为您推荐以下商品:")
+    final_products = [item[1] for item in weighted_recommendations[:15]]
+    for i, product in enumerate(final_products, 1):
+        print(f"\n{i}. {product.name}")
+        print(f"   价格: ¥{product.price}")
+        print(f"   店铺: {product.shop_name}")
+        print(f"   评论数: {product.d_rate_nums}")
+        print(f"   标签: {[t.name for t in product.tags.all()]}")
+        print("   " + "="*20)
+
+    print("\n===== 推荐完成 =====\n")
+    return final_products
 
 
-# 计算相似度
-def similarity(product1_id, product2_id):
-    product1_set = Rate.objects.filter(product_id=product1_id)
-    # 1的打分用户数
-    product1_sum = product1_set.count()
-    # 2的打分用户数
-    product2_sum = Rate.objects.filter(product_id=product2_id).count()
-    # 两者的交集
-    common = Rate.objects.filter(user_id__in=Subquery(product1_set.values('user_id')), product=product2_id).values('user_id').count()
-    # 没有人给当前电商产品打分
-    if product1_sum == 0 or product2_sum == 0:
-        return 0
-    similar_value = common / sqrt(product1_sum * product2_sum)#余弦计算相似度
-    return similar_value
+def recommend_by_item_id(current_product_id=None, k=15):
+    """基于当前浏览商品标签的推荐"""
+    # print("\n===== 基于标签的商品推荐 =====")
+    
+    # 获取当前浏览的商品
+    try:
+        current_product = Product.objects.get(id=current_product_id) if current_product_id else None
+    except Product.DoesNotExist:
+        current_product = None
+    
+    if not current_product:
+        print("\n无当前浏览商品,返回热门商品排行:")
+        hot_products = Product.objects.annotate(
+            popular=Count('collect') + Count('rate')
+        ).order_by('-popular')[:k]
+        return hot_products
 
+    # 输出当前浏览商品信息  
+    # print(f"\n当前浏览商品: {current_product.name}")
+    # print(f"价格: ¥{current_product.price}")
+    # print(f"店铺: {current_product.shop_name}")
+    # print(f"评论数: {current_product.d_rate_nums}")
+    # print(f"所属标签: {[t.name for t in current_product.tags.all()]}")
 
-#基于物品
-def recommend_by_item_id(user_id, k=15):
-    # 前三的tag，用户评分前三的电商产品
-    user_prefer = UserTagPrefer.objects.filter(user_id=user_id).order_by('-score').values_list('tag_id', flat=True)
-    user_prefer = list(user_prefer)[:3]
-    current_user = User.objects.get(id=user_id)
-    # 如果当前用户没有打分 则看是否选择过标签，选过的话，就从标签中找
-    # 没有的话，就按照浏览度推荐15个
-    if current_user.rate_set.count() == 0:
-        if len(user_prefer) != 0:
-            product_list = Product.objects.filter(tags__in=user_prefer)[:15]
-        else:
-            product_list = Product.objects.order_by("-num")[:15]
-        print('from here')
-        return product_list
-    # most_tags = Tags.objects.annotate(tags_sum=Count('name')).order_by('-tags_sum').filter(movie__rate__user_id=user_id).order_by('-tags_sum')
-    # 选用户最喜欢的标签中的电商产品，用户没看过的30部，对这30部电商产品，计算距离最近
-    un_watched = Product.objects.filter(~Q(rate__user_id=user_id), tags__in=user_prefer).order_by('?')[:30]  # 看过的电商产品
-    watched = Rate.objects.filter(user_id=user_id).values_list('product_id', 'mark')
-    distances = []
-    names = []
-    # 在未看过的电商产品中找到
-    for un_watched_product in un_watched:
-        for watched_product in watched:
-            if un_watched_product not in names:
-                names.append(un_watched_product)
-                distances.append((similarity(un_watched_product.id, watched_product[0]) * watched_product[1], un_watched_product))#加入相似的电商产品
-    distances.sort(key=lambda x: x[0], reverse=True)
-    print('this is distances', distances[:15])
-    recommend_list = []
-    for mark, movie in distances:
-        if len(recommend_list) >= k:
-            break
-        if movie not in recommend_list:
-            recommend_list.append(movie)
-    # print('this is recommend list', recommend_list)
-    # 如果得不到有效数量的推荐 按照未看过的电商产品中的热度进行填充
-    print('recommend list', recommend_list)
-    return recommend_list
+    # 基于当前商品标签推荐同类商品
+    current_tags = current_product.tags.all()
+    
+    similar_products = Product.objects.filter(
+        tags__in=current_tags
+    ).exclude(
+        id=current_product.id  # 排除当前商品
+    ).annotate(
+        tag_count=Count('tags', filter=Q(tags__in=current_tags)),
+        popular=Count('collect') + Count('rate')
+    ).filter(
+        tag_count__gt=0  
+    ).order_by(
+        '-tag_count',
+        '-popular'
+    )[:k]
+
+    # print("\n为您推荐以下同类商品:")
+    # for i, p in enumerate(similar_products, 1):
+    #     print(f"\n{i}. {p.name}")
+    #     print(f"   价格: ¥{p.price}")
+    #     print(f"   店铺: {p.shop_name}") 
+    #     print(f"   评论数: {p.d_rate_nums}")
+    #     print(f"   共同标签数: {p.tag_count}")
+    #     print(f"   所属标签: {[t.name for t in p.tags.all()]}")
+    #     print("   " + "="*20)
+
+    # print("\n===== 推荐完成 =====\n")
+    return similar_products
 
 
 if __name__ == '__main__':
-    similarity(2003, 2008)
-    recommend_by_item_id(1)
+    # 测试用户id为1的推荐
+    recommend_by_item_id(current_product_id=1)

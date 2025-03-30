@@ -4,83 +4,530 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>看板-跨境电商产品推荐与展示系统</title>
+  <title>数据看板-跨境电商产品推荐系统</title>
   <link rel="stylesheet" href="{% static 'css/index.css' %}">
-</head>
+  <style>
+    /* 增大看板字体 */
+    .mainbox { 
+      padding: 20px; 
+      background: rgba(255,255,255,0.1);
+      min-height: 100vh;
+      font-size: 16px;  /* 增大基础字体 */
+    }
+    
+    h1 {
+      font-size: 42px; /* 增大标题字体 */
+    }
+    
+    h2 {
+      font-size: 36px; /* 更大的标题字体 */
+      margin: 0 0 20px 0;
+      color: #fff;
+      font-weight: bold;
+    }
+    
+    /* 更大的标题字体 */
+    header {
+      /* 增加header样式 */
+      padding: 20px 0;
+      text-align: center;
+    }
 
+    header h1 {
+      font-size: 48px; /* 增大主标题 */ 
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+
+    .showTime {
+      font-size: 36px; /* 增大更新时间字体 */
+      color: #fff;
+      text-align: center;
+    }
+
+    .showTime span {
+      font-size: 36px; /* 增大时间字体 */
+      color: #00f2f1; /* 高亮显示时间 */
+      font-weight: bold;
+    }
+
+    .panel h2 {
+      font-size: 42px; /* 增大副标题 */
+      font-weight: bold;
+      margin: 0 0 20px 0; 
+      color: #fff;
+      padding: 10px 0;
+    }
+
+    /* 增大核心指标文字 */
+    .no-hd ul li {
+      font-size: 32px; /* 增大指标数值字体 */
+      padding: 15px 0;
+      color: #00f2f1;
+    }
+    
+    /* 增大图表轴标签字体 */
+    .chart {
+      min-height: 300px;
+      height: 100%;
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 10px;
+      position: relative; /* 确保图表定位正确 */
+      z-index: 1; /* 提高图表层级 */
+    }
+    .chart text {
+      font-size: 24px !important; /* 更大的图表文字 */
+      font-weight: bold;
+    }
+    
+    /* 增大图例文字 */  
+    .legend {
+      font-size: 24px !important;
+    }
+
+    /* 增大tooltip提示框文字 */
+    .tooltip {
+      font-size: 24px !important; 
+    }
+
+    /* 增大坐标轴标签 */
+    .panel .chart .echarts-axis-line text,
+    .panel .chart .echarts-axis text {
+      font-size: 24px !important;
+      font-weight: bold;
+    }
+
+    /* 增大图表标题 */
+    .echarts-title {
+      font-size: 30px !important;
+      font-weight: bold;
+    }
+
+    /* 时间显示文字 */
+    .panel { 
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      margin: 10px;
+      padding: 15px;
+      border-radius: 12px;
+      height: auto;
+      overflow: hidden; /* 防止内容溢出 */
+    }
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 20px; /* 增加面板之间的间距 */
+    }
+    /* 针对特定面板的高度调整 */
+    .panel.bar,
+    .panel.price,
+    .panel.comments {
+      height: auto;
+      min-height: 350px;
+    }
+    .panel.line1,
+    .panel.pie1,
+    .panel.shops {
+      height: auto; 
+      min-height: 350px;
+    }
+    .no-bd ul li {
+      font-size: 16px;
+      color: #fff;
+    }
+  </style>
+  
+  <!-- 先引入jQuery和ECharts -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+</head>
 <body>
   <header>
-    <h1>跨境电商产品推荐与展示系统</h1>
-    <div class="showTime">当前时间：<span></span></div>
+    <h1>跨境电商数据分析看板</h1>
+    <div class="showTime"><span></span></div>
   </header>
+  
   <section class="mainbox">
+    <!-- 第一行 -->
     <div class="column">
-      <div class="panel bar" style="height: 48%;">
-        <h2>
-          评价量排名前10名的店铺
-        </h2>
-        <div class="chart" style="height: 280px;"></div>
-        <div class="panel-footer"></div>
-      </div>
-      <div class="panel pie">
-        <h2>热门电商产品标签电商产品量统计</h2>
+      <div class="panel price">
+        <h2>商品价格分布</h2>
         <div class="chart"></div>
-        <div class="panel-footer"></div>
       </div>
     </div>
+
+    <!-- 第二行 -->
     <div class="column">
-      <div class="no">
-        <div class="no-hd">
-          <ul>
-            <li><span id="totalMovie"></span></li>
-            <li><span id="totalTag"></span></li>
-            <li><span id="totalSelf"></span></li>
-            <li><span id="totalNotSelf"></span></li>
-          </ul>
-        </div>
-        <div class="no-bd">
-          <ul>
-            <li>电商产品总量</li>
-            <li>电商产品标签总量</li>
-              <li>自营店铺</li>
-              <li>非自营店铺</li>
-          </ul>
-        </div>
-      </div>
-         <div class="column" style="margin-top: 10px;">
       <div class="panel line1">
-        <h2>不同电商产品标签的平均价格</h2>
+        <h2>各品类平均价格</h2>
         <div class="chart"></div>
-        <div class="panel-footer"></div>
       </div>
-      <div class="panel pie1">
-        <h2>自营店铺和非自营店铺比例</h2>
-        <div class="chart"></div>
-        <div class="panel-footer"></div>
+
+      <div class="panel shops" style="height: auto; min-height: 600px;">
+        <h2>店铺商品数量TOP10分析</h2>
+        <div class="chart" style="height: 550px;"></div>
       </div>
     </div>
+
+    <!-- 第三行 - 店铺类型分布 -->
+    <div class="column" style="width: 100%; margin-top: 20px;">
+      <div class="panel pie1">
+        <h2>店铺类型分布</h2>
+        <div class="chart"></div>
+      </div>
     </div>
   </section>
-
-  <script src="{% static 'js/flexible.js' %}"></script>
-  <script src="{% static 'js/jquery-2.1.1.min.js' %}"></script>
- <script src="{% static 'js/echarts.min.js' %}"></script>
-  <script src="{% static 'js/world.js' %}"></script>
-  <script src="{% static 'js/index.js' %}"></script>
-
   <script>
-    (function (fn) {
-      fn();
-      setInterval(fn, 1000);
-    })(function () {
-     var dt = new Date();
-      document.querySelector(".showTime span").innerHTML =
-        dt.getDate() + "日-" +
-        dt.getHours() + "时" +
-        dt.getMinutes() + "分" +
-        dt.getSeconds() + "秒";
+    function initCharts() {
+        // 获取核心数据
+        $.ajax({
+            url: '/total_data/',
+            type: 'GET',
+            success: function(result) {
+                console.log("核心数据:", result);
+                updateCoreData(result);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error:", error);
+                alert("加载数据失败,请刷新页面重试"); 
+            }
+        });
+
+        // 初始化商品分类分布图表 
+        $.ajax({
+            url: '/category_distribution/',
+            type: 'GET', 
+            success: function(result) {
+                if(!result || !Array.isArray(result)) {
+                    console.warn("分类数据异常!");
+                    return;
+                }
+                
+                const pieChart = echarts.init(document.querySelector(".pie1 .chart"));
+                pieChart.setOption({
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{b}: {c} ({d}%)'
+                    },
+                    series: [{
+                        type: 'pie',
+                        radius: '60%',
+                        data: result,
+                        label: { 
+                            color: '#fff',
+                            fontSize: 24,
+                            fontWeight: 'bold'
+                        }
+                    }],
+                    textStyle: {
+                        fontSize: 24,
+                        fontWeight: 'bold'
+                    },
+                    title: {
+                        textStyle: {
+                            fontSize: 30,
+                            fontWeight: 'bold' 
+                        }
+                    },
+                    legend: {
+                        textStyle: {
+                            fontSize: 24,
+                            fontWeight: 'bold'
+                        }
+                    }
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error("分类数据加载失败:", error);
+            }
+        });
+
+        // 初始化价格分析图表
+        $.ajax({
+            url: '/price_analysis/',
+            type: 'GET',
+            success: function(result) {
+                console.log("价格分析数据:", result);
+                if(!result || result.length === 0) {
+                    console.warn("价格分析数据为空!");
+                    return;
+                }
+
+                const priceChart = echarts.init(document.querySelector(".line1 .chart"));
+                priceChart.setOption({
+                    tooltip: { trigger: 'axis' },
+                    xAxis: { 
+                        type: 'value',
+                        axisLabel: { 
+                            color: '#fff',
+                            fontSize: 24,
+                            fontWeight: 'bold'
+                        }
+                    },
+                    yAxis: { 
+                        type: 'category',
+                        data: result.map(item => item.key),
+                        axisLabel: { 
+                            color: '#fff',
+                            fontSize: 24,
+                            fontWeight: 'bold'
+                        }
+                    },
+                    series: [{
+                        type: 'bar',
+                        data: result.map(item => item.value)
+                    }],
+                    textStyle: {
+                        fontSize: 24,
+                        fontWeight: 'bold'
+                    },
+                    title: {
+                        textStyle: {
+                            fontSize: 30,
+                            fontWeight: 'bold' 
+                        }
+                    },
+                    legend: {
+                        textStyle: {
+                            fontSize: 24,
+                            fontWeight: 'bold'
+                        }
+                    }
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error("Error:", error);
+                alert("加载数据失败,请刷新页面重试");
+            }
+        });
+
+        // 初始化店铺类型分布图
+        $.ajax({
+            url: '/percent_analysis/',
+            type: 'GET',
+            success: function(result) {
+                console.log("店铺类型数据:", result);
+                if(!result || result.length === 0) {
+                    console.warn("店铺类型数据为空!");
+                    return;
+                }
+
+                const pieChart = echarts.init(document.querySelector(".pie1 .chart"));
+                pieChart.setOption({
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{b}: {c} ({d}%)'
+                    },
+                    series: [{
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        data: result,
+                        label: { 
+                            color: '#fff',
+                            fontSize: 24,
+                            fontWeight: 'bold'
+                        }
+                    }],
+                    textStyle: {
+                        fontSize: 24,
+                        fontWeight: 'bold'
+                    },
+                    title: {
+                        textStyle: {
+                            fontSize: 30,
+                            fontWeight: 'bold' 
+                        }
+                    },
+                    legend: {
+                        textStyle: {
+                            fontSize: 24,
+                            fontWeight: 'bold'
+                        }
+                    }
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error("Error:", error);
+                alert("加载数据失败,请刷新页面重试");
+            }
+        });
+    }
+
+    // 更新核心数据显示
+    function updateCoreData(result) {
+        $('#totalProducts').text(result.total_products);
+        $('#totalTags').text(result.total_tags); 
+        $('#avgPrice').text(result.avg_price);
+        $('#avgComments').text(result.avg_comments);
+        $('#totalShops').text(result.total_shops);
+        $('#totalSelf').text(result.total_self);
+        $('#totalNotSelf').text(result.total_notself);
+    }
+
+    // 初始化新增图表
+    function initNewCharts() {
+        // 价格分布 - 改用双层环形图
+        $.ajax({
+            url: '/price_distribution/',
+            type: 'GET',
+            success: function(result) {
+                const priceChart = echarts.init(document.querySelector(".price .chart"));
+                priceChart.setOption({
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{b}: {c} ({d}%)',
+                        textStyle: {
+                            fontSize: 14  // 减小提示框字体
+                        }
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        right: 10,
+                        top: 'center',
+                        textStyle: {
+                            color: '#fff',
+                            fontSize: 14,  // 减小图例字体
+                            fontWeight: 'normal'
+                        }
+                    },
+                    series: [
+                        {
+                            name: '价格区间',
+                            type: 'pie',
+                            radius: ['40%', '70%'],
+                            center: ['40%', '50%'],
+                            avoidLabelOverlap: false,
+                            itemStyle: {
+                                borderRadius: 10,
+                                borderColor: '#fff',
+                                borderWidth: 2
+                            },
+                            label: {
+                                show: true,
+                                color: '#fff',
+                                fontSize: 12,  // 减小标签字体
+                                formatter: '{b}\n{c}件\n{d}%'
+                            },
+                            emphasis: {
+                                label: {
+                                    show: true,
+                                    fontSize: 14,  // 减小悬浮时的字体
+                                    fontWeight: 'bold'
+                                }
+                            },
+                            data: result.map(item => ({
+                                name: item.name,
+                                value: item.value
+                            }))
+                        }
+                    ],
+                    color: ['#37a2da', '#32c5e9', '#9fe6b8', '#ffdb5c', '#ff9f7f']
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error("Error:", error);
+                alert("加载数据失败,请刷新页面重试");
+            }
+        });
+
+        // 店铺分析
+        $.ajax({
+            url: '/shop_analysis/',
+            type: 'GET', 
+            success: function(result) {
+                const shopChart = echarts.init(document.querySelector(".shops .chart"));
+                shopChart.setOption({
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data: ['商品数量', '平均价格'],
+                        textStyle: { 
+                            color: '#fff',
+                            fontSize: 24,
+                            fontWeight: 'bold'
+                        }
+                    },
+                    xAxis: {
+                        type: 'value',
+                        axisLabel: { 
+                            color: '#fff',
+                            fontSize: 24,
+                            fontWeight: 'bold'
+                        }
+                    },
+                    yAxis: {
+                        type: 'category',
+                        data: result.shop_prices.map(item => item.name), 
+                        axisLabel: { 
+                            color: '#fff',
+                            fontSize: 16, // 减小y轴标签字体
+                            fontWeight: 'normal',
+                            width: 100, // 设置标签宽度
+                            overflow: 'truncate', // 超出部分显示...
+                            interval: 0 // 强制显示所有标签
+                        }
+                    },
+                    series: [{
+                        type: 'bar',
+                        data: result.shop_prices.map(item => item.value),
+                        label: {
+                            show: true,
+                            position: 'right',
+                            fontSize: 14, // 减小数值标签字体
+                            formatter: '{c}' // 只显示数值
+                        }
+                    }],
+                    textStyle: {
+                        fontSize: 14, // 减小整体文字大小 
+                        fontWeight: 'normal'
+                    },
+                    title: {
+                        textStyle: {
+                            fontSize: 30,
+                            fontWeight: 'bold' 
+                        }
+                    }
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error("Error:", error);
+                alert("加载数据失败,请刷新页面重试");
+            }
+        });
+    }
+
+    // 页面加载完成后初始化
+    $(document).ready(function() {
+        try {
+            initCharts();
+            initNewCharts();
+        } catch(e) {
+            console.error("图表初始化失败:", e);
+        }
+        
+        // 自动更新时间
+        setInterval(function() {
+            var now = new Date();
+            document.querySelector(".showTime span").innerHTML = 
+                now.getFullYear() + "-" + 
+                (now.getMonth() + 1) + "-" +
+                now.getDate() + " " +
+                now.getHours() + ":" +
+                now.getMinutes() + ":" +
+                now.getSeconds();
+        }, 1000);
+    });
+
+    // 窗口大小改变时重绘图表 
+    window.addEventListener('resize', function() {
+        document.querySelectorAll('.chart').forEach(chart => {
+            echarts.getInstanceByDom(chart)?.resize();
+        });
     });
   </script>
 </body>
-
 </html>

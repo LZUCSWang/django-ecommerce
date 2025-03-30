@@ -1,0 +1,101 @@
+--2025-03-30 11:38:49--  https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp
+正在解析主机 www.gravatar.com (www.gravatar.com)... 173.236.212.42, 2001::b92d:639
+正在连接 www.gravatar.com (www.gravatar.com)|173.236.212.42|:443... 失败：连接超时。
+正在连接 www.gravatar.com (www.gravatar.com)|2001::b92d:639|:443... 失败：连接超时。
+重试中。
+
+--2025-03-30 11:43:21--  (尝试次数： 2)  https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp
+正在连接 www.gravatar.com (www.gravatar.com)|173.236.212.42|:443... 失败：连接超时。
+正在连接 www.gravatar.com (www.gravatar.com)|2001::b92d:639|:443... 失败：连接超时。
+重试中。
+
+--2025-03-30 11:47:52--  (尝试次数： 3)  https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp
+正在连接 www.gravatar.com (www.gravatar.com)|173.236.212.42|:443... 失败：连接超时。
+正在连接 www.gravatar.com (www.gravatar.com)|2001::b92d:639|:443... 失败：连接超时。
+重试中。
+
+--2025-03-30 11:52:23--  (尝试次数： 4)  https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp
+正在连接 www.gravatar.com (www.gravatar.com)|173.236.212.42|:443... 失败：连接超时。
+正在连接 www.gravatar.com (www.gravatar.com)|2001::b92d:639|:443... 失败：连接超时。
+重试中。
+
+--2025-03-30 11:56:59--  (尝试次数： 5)  https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp
+正在连接 www.gravatar.com (www.gravatar.com)|173.236.212.42|:443... 失败：连接超时。
+正在连接 www.gravatar.com (www.gravatar.com)|2001::b92d:639|:443... 失败：连接超时。
+重试中。
+
+--2025-03-30 12:01:34--  (尝试次数： 6)  https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp
+正在连接 www.gravatar.com (www.gravatar.com)|173.236.212.42|:443... 失败：连接超时。
+正在连接 www.gravatar.com (www.gravatar.com)|2001::b92d:639|:443... 失败：连接超时。
+重试中。
+
+--2025-03-30 12:06:10--  (尝试次数： 7)  https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp
+正在连接 www.gravatar.com (www.gravatar.com)|173.236.212.42|:443... 失败：连接超时。
+正在连接 www.gravatar.com (www.gravatar.com)|2001::b92d:639|:443... 失败：连接超时。
+重试中。
+
+--2025-03-30 12:10:45--  (尝试次数： 8)  https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp
+正在连接 www.gravatar.com (www.gravatar.com)|173.236.212.42|:443... 失败：连接超时。
+正在连接 www.gravatar.com (www.gravatar.com)|2001::b92d:639|:443... 失败：连接超时。
+重试中。
+
+--2025-03-30 12:15:25--  (尝试次数： 9)  https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp
+正在连接 www.gravatar.com (www.gravatar.com)|173.236.212.42|:443... 失败：连接超时。
+正在连接 www.gravatar.com (www.gravatar.com)|2001::b92d:639|:443... 失败：连接超时。
+重试中。
+
+--2025-03-30 12:20:04--  (尝试次数：10)  https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp
+正在连接 www.gravatar.com (www.gravatar.com)|173.236.212.42|:443... 失败：连接超时。
+正在连接 www.gravatar.com (www.gravatar.com)|2001::b92d:639|:443... 失败：连接超时。
+重试中。
+
+--2025-03-30 12:24:44--  (尝试次数：11)  https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp
+正在连接 www.gravatar.com (www.gravatar.com)|173.236.212.42|:443... 失败：连接超时。
+正在连接 www.gravatar.com (www.gravatar.com)|2001::b92d:639|:443... 失败：连接超时。
+重试中。
+
+--2025-03-30 12:29:22--  (尝试次数：12)  https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp
+正在连接 www.gravatar.com (www.gravatar.com)|173.236.212.42|:443... 失败：连接超时。
+正在连接 www.gravatar.com (www.gravatar.com)|2001::b92d:639|:443... 失败：连接超时。
+重试中。
+
+--2025-03-30 12:34:01--  (尝试次数：13)  https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp
+正在连接 www.gravatar.com (www.gravatar.com)|173.236.212.42|:443... 失败：连接超时。
+正在连接 www.gravatar.com (www.gravatar.com)|2001::b92d:639|:443... 失败：连接超时。
+重试中。
+
+--2025-03-30 12:38:39--  (尝试次数：14)  https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp
+正在连接 www.gravatar.com (www.gravatar.com)|173.236.212.42|:443... 失败：连接超时。
+正在连接 www.gravatar.com (www.gravatar.com)|2001::b92d:639|:443... 失败：连接超时。
+重试中。
+
+--2025-03-30 12:43:18--  (尝试次数：15)  https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp
+正在连接 www.gravatar.com (www.gravatar.com)|173.236.212.42|:443... 失败：连接超时。
+正在连接 www.gravatar.com (www.gravatar.com)|2001::b92d:639|:443... 失败：连接超时。
+重试中。
+
+--2025-03-30 12:47:56--  (尝试次数：16)  https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp
+正在连接 www.gravatar.com (www.gravatar.com)|173.236.212.42|:443... 失败：连接超时。
+正在连接 www.gravatar.com (www.gravatar.com)|2001::b92d:639|:443... 失败：连接超时。
+重试中。
+
+--2025-03-30 12:52:35--  (尝试次数：17)  https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp
+正在连接 www.gravatar.com (www.gravatar.com)|173.236.212.42|:443... 失败：连接超时。
+正在连接 www.gravatar.com (www.gravatar.com)|2001::b92d:639|:443... 失败：连接超时。
+重试中。
+
+--2025-03-30 12:57:13--  (尝试次数：18)  https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp
+正在连接 www.gravatar.com (www.gravatar.com)|173.236.212.42|:443... 失败：连接超时。
+正在连接 www.gravatar.com (www.gravatar.com)|2001::b92d:639|:443... 失败：连接超时。
+重试中。
+
+--2025-03-30 13:01:52--  (尝试次数：19)  https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp
+正在连接 www.gravatar.com (www.gravatar.com)|173.236.212.42|:443... 失败：连接超时。
+正在连接 www.gravatar.com (www.gravatar.com)|2001::b92d:639|:443... 失败：连接超时。
+重试中。
+
+--2025-03-30 13:06:30--  (尝试次数：20)  https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp
+正在连接 www.gravatar.com (www.gravatar.com)|173.236.212.42|:443... 失败：连接超时。
+正在连接 www.gravatar.com (www.gravatar.com)|2001::b92d:639|:443... 失败：连接超时。
+放弃操作。
+

@@ -100,59 +100,32 @@
 
                                                   // 2. 指定配置和数据
                                                   var option = {
-                                                    color: ["#00f2f1", "#ed3f35"],
+                                                    color: ["#00f2f1"],
                                                     tooltip: {
-                                                      // 通过坐标轴来触发
-                                                      trigger: "axis"
-                                                    },
-                                                    legend: {
-                                                      // 距离容器10%
-                                                      right: "10%",
-                                                      // 修饰图例文字的颜色
-                                                      textStyle: {
-                                                        color: "#4c9bfd"
-                                                      }
-                                                      // 如果series 里面设置了name，此时图例组件的data可以省略
-                                                      // data: ["邮件营销", "联盟广告"]
+                                                      trigger: "axis",
+                                                      formatter: "{a} <br/>{b} : {c}"
                                                     },
                                                     grid: {
                                                       top: "20%",
                                                       left: "3%",
                                                       right: "4%",
                                                       bottom: "3%",
-                                                      show: true,
-                                                      borderColor: "#012f4a",
                                                       containLabel: true
                                                     },
 
                                                     xAxis: {
                                                       type: "category",
                                                       boundaryGap: false,
-                                                      data: result.map(data => data.key),
-                                                      // 去除刻度
-                                                      axisTick: {
-                                                        show: false
-                                                      },
-                                                      // 修饰刻度标签的颜色
+                                                      data: result.map(item => item.key),
                                                       axisLabel: {
                                                         color: "rgba(255,255,255,.7)"
-                                                      },
-                                                      // 去除x坐标轴的颜色
-                                                      axisLine: {
-                                                        show: false
                                                       }
                                                     },
                                                     yAxis: {
                                                       type: "value",
-                                                      // 去除刻度
-                                                      axisTick: {
-                                                        show: false
-                                                      },
-                                                      // 修饰刻度标签的颜色
                                                       axisLabel: {
                                                         color: "rgba(255,255,255,.7)"
                                                       },
-                                                      // 修改y轴分割线的颜色
                                                       splitLine: {
                                                         lineStyle: {
                                                           color: "#012f4a"
@@ -161,10 +134,10 @@
                                                     },
                                                     series: [
                                                       {
+                                                        name: "平均评价数",
                                                         type: "line",
-                                                        // 是否让线条圆滑显示
                                                         smooth: true,
-                                                        data: result.map(data => data.value)
+                                                        data: result.map(item => item.value)
                                                       }
                                                     ]
                                                   };
@@ -424,3 +397,37 @@
                                             }
                                         });
 })();
+
+// 自动更新时间
+function updateTime() {
+    var now = new Date();
+    document.querySelector(".showTime span").innerHTML = 
+        now.getFullYear() + "-" + 
+        (now.getMonth() + 1) + "-" +
+        now.getDate() + " " +
+        now.getHours() + ":" +
+        now.getMinutes() + ":" +
+        now.getSeconds();
+}
+setInterval(updateTime, 1000);
+
+// 定时刷新数据
+function refreshData() {
+    $.get('/total_data/', function(data) {
+        $('#totalMovie').text(data.total_products);
+        $('#totalTag').text(data.total_tags);
+        $('#totalSelf').text(data.total_self);
+        $('#totalNotSelf').text(data.total_notself);
+    });
+    
+    // 重新加载所有图表
+    loadAllCharts();
+}
+
+// 每5分钟刷新一次数据
+setInterval(refreshData, 300000);
+
+// 初始加载
+$(document).ready(function() {
+    refreshData();
+});

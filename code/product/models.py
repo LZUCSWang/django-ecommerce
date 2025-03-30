@@ -45,7 +45,8 @@ class UserTagPrefer(models.Model):
         verbose_name_plural = "偏好"
 
     def __str__(self):
-        return self.user.username + str(self.score)
+        # 修改返回格式,包含标签名称
+        return f"{self.user.username} - {self.tag.name}: {self.score}"
 
 
 class Product(models.Model):

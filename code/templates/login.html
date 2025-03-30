@@ -13,9 +13,11 @@
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <style>
         body {
-            background-image: url({% static 'images/reg_bg.jpg' %});
-            background-size: 100%;
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+                        url("{% static 'images/reg_bg.jpg' %}") center center fixed;
+            background-size: cover;
             background-repeat: no-repeat;
+            min-height: 100vh;
         }
 
         .container {

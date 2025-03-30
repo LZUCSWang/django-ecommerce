@@ -138,8 +138,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static")
+    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'static/font'),
 ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
@@ -147,4 +150,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 LANGUAGE_CODE = 'zh-hans'
 TIME_ZONE = 'Asia/Shanghai'
 SIMPLEUI_HOME_INFO = False
+
+# 添加默认头像设置
+GRAVATAR_DEFAULT_URL = STATIC_URL + 'images/default-avatar.png'
 

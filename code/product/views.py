@@ -1,10 +1,15 @@
 import json
 import random
+import pandas as pd
+import os
 from functools import wraps
+import logging
+
+logger = logging.getLogger('django')
 
 from django.core.cache import cache
 from django.core.paginator import Paginator
-from django.db.models import Q, Count
+from django.db.models import Q, Count, Avg, Sum
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -18,6 +23,7 @@ from product_it.cache_keys import USER_CACHE, ITEM_CACHE
 from product_it.recommend_movies import recommend_by_user_id, recommend_by_item_id
 from .forms import *
 from product.word_cloud import build_wordcloud
+from product.templatetags.grav_tag import gravatar
 
 def Products_paginator(Products, page):
     paginator = Paginator(Products, 12)
@@ -153,6 +159,9 @@ def product(request, product_id):
         user_rate = Rate.objects.filter(product=product, user_id=user_id).first()
         user = User.objects.get(pk=user_id)
         is_collect = product.collect.filter(id=user_id).first()
+    for comment in comments:
+        print(f"User email: {comment.user.email}")
+        print(f"Gravatar URL: {gravatar(comment.user.email, size=48)}")
     return render(request, "product.html", locals())
 
 
@@ -364,113 +373,140 @@ def mycollect(request):
 
 # 基于用户推荐
 def user_recommend(request):
-    # cache_key = USER_CACHE.format(user_id=user_id)
     user_id = request.session.get("user_id")
+    print("用户推荐，user_id:", user_id)
     if user_id is None:
-        product_list = Product.objects.order_by('?')
+        # 未登录用户返回随机推荐
+        product_list = Product.objects.order_by('?')[:3]
     else:
-        cache_key = USER_CACHE.format(user_id=user_id)
-        product_list = cache.get(cache_key)
-        if product_list is None:
-            product_list = recommend_by_user_id(user_id)
-            cache.set(cache_key, product_list, 60 * 5)
-            print('设置缓存')
+        # 获取用户标签偏好
+        user_prefer = UserTagPrefer.objects.filter(user_id=user_id).order_by('-score')
+        print(user_prefer)
+        if user_prefer.exists():
+            # 基于标签偏好推荐
+            tag_weights = {p.tag_id: p.score for p in user_prefer}
+            products = Product.objects.all()
+            weighted_products = []
+            
+            for product in products:
+                score = 0
+                for tag in product.tags.all():
+                    score += tag_weights.get(tag.id, 0)
+                if score > 0:
+                    weighted_products.append((score, product))
+            
+            weighted_products.sort(key=lambda x: (-x[0], -x[1].collect.count()))
+            product_list = [p[1] for p in weighted_products[:15]]
         else:
-            print('缓存命中!')
+            # 无标签偏好时返回热门商品
+            product_list = Product.objects.annotate(
+                weight=Count('collect') + Count('rate')
+            ).order_by('-weight')[:15]
 
-    json_products = [product.to_dict(fields=['name', 'image_link', 'id', 'shop_name', 'd_rate_nums']) for product in product_list]
+    json_products = [product.to_dict(fields=['name', 'image_link', 'id', 'shop_name', 'd_rate_nums']) 
+                    for product in product_list]
     random.shuffle(json_products)
     return HttpResponse(json.dumps(json_products[:3]), content_type="application/json")
 
 
 # 基于物品推荐
 def item_recommend(request):
-    # return render(request,'index.html')
-    user_id = request.session.get("user_id")
-    if user_id is None:
-        product_list = Product.objects.order_by('?')
+    """基于当前浏览商品的标签推荐相似商品"""
+    current_product_id = request.GET.get('product_id')
+    # print("当前浏览商品ID:", current_product_id)
+    
+    if not current_product_id:
+        # 没有当前商品时返回随机商品
+        product_list = Product.objects.order_by('?')[:3]
     else:
-        cache_key = ITEM_CACHE.format(user_id=user_id)
+        # 使用缓存提高性能
+        cache_key = f'item_similar_{current_product_id}'
         product_list = cache.get(cache_key)
+        
         if product_list is None:
-            product_list = recommend_by_item_id(user_id)
-            cache.set(cache_key, product_list, 60 * 5)
-            print('设置缓存')
-        else:
-            print('缓存命中!')
-    json_products = [product.to_dict(fields=['name', 'image_link', 'id', 'shop_name', 'd_rate_nums']) for product in product_list]
+            # 调用推荐函数,只传入商品ID
+            product_list = recommend_by_item_id(current_product_id=current_product_id)
+            cache.set(cache_key, product_list, 60 * 5)  # 缓存5分钟
+            # print('设置商品推荐缓存')
+        # else:
+        #     print('命中商品推荐缓存')
+
+    # 转换为JSON格式并随机打乱顺序
+    json_products = [product.to_dict(fields=['name', 'image_link', 'id', 'shop_name', 'd_rate_nums']) 
+                    for product in product_list]
     random.shuffle(json_products)
+    
+    # 打印推荐结果
+    # print('推荐商品:', [(p['name'], p['id']) for p in json_products[:3]])
     return HttpResponse(json.dumps(json_products[:3]), content_type="application/json")
 
 
 # 数据分析
 
-# 评价排名前10图
-def comment_analysis(request):
-    products = Product.objects.order_by('-d_rate_nums')[:]
-
-    unique_shops = set()
-    response = []
-
-    for product in products:
-        if product.shop_name not in unique_shops:
-            unique_shops.add(product.shop_name)
-            response.append({
-                'key': product.shop_name,
-                'value': product.d_rate_nums
-            })
-
-        if len(response) >= 10:
-            break
-
-    return JsonResponse(response, safe=False)
+def read_csv_data():
+    """读取产品CSV数据"""
+    csv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'csv_data', 'product.csv')
+    try:
+        df = pd.read_csv(csv_path)
+        return df
+    except Exception as e:
+        print(f"Error reading CSV: {e}")
+        return None
 
 # 电商产品表统计图
-def tags_analysis(request):
-    tag_counts = Tags.objects.annotate(count=Count('product')).values('name', 'count')
-    rating_counts_dict = [{'name': rating['name'], 'value': rating['count']} for rating in tag_counts]
-    return HttpResponse(json.dumps(rating_counts_dict), content_type="application/json")
-
+def tags_analysis(request): 
+    """商品分类统计"""
+    try:
+        df = read_csv_data()
+        if df is not None:
+            # 统计各标签数量
+            tag_counts = df['tag'].value_counts()
+            
+            data = [{'name': tag, 'value': int(count)}
+                    for tag, count in tag_counts.items()]
+            return JsonResponse(data, safe=False)
+    except Exception as e:
+        print(f"Error in tags_analysis: {e}")
+        return JsonResponse([], safe=False)
 
 # 电商产品不同标签及平均价格
 def years_analysis(request):
-    # 查询所有的标签
-    tags = Tags.objects.all()
-    tag_price_average = []
-
-    # 循环遍历每个标签
-    for tag in tags:
-        # 获得该标签的所有电商产品
-        products = tag.product_set.all()
-
-        # 计算该标签下所有电商产品的平均价格
-        total_price = 0
-        for product in products:
-            total_price += product.price
-        average_price = round(total_price / len(products), 2)  # 保留两位小数
-
-        # 将标签名和平均价格添加到列表中作为字典形式的对象
-        tag_price_average.append({"key": tag.name, "value": average_price})
-
-    # 返回JSON格式的结果
-    return JsonResponse(tag_price_average, safe=False)
+    """返回各品类平均价格"""
+    try:
+        df = read_csv_data()
+        if df is not None:
+            # 计算各标签的平均价格
+            avg_prices = df.groupby('tag')['price'].mean()
+            
+            data = [{
+                'key': tag,
+                'value': round(float(price), 2)
+            } for tag, price in avg_prices.items()]
+            return JsonResponse(data, safe=False)
+    except Exception as e:
+        print(f"Error in years_analysis: {e}")
+        return JsonResponse([], safe=False)
 
 # 大屏折线图
 def years_analysis_dash(request):
-    Product_counts = (
-        Product.objects
-            .annotate(year=ExtractYear('years'))  # 提取年份
-            .values('year')
-            .annotate(count=Count('id'))
-            .order_by('year')
-    )
-    years_counts_dict = [{'key': rating['year'], 'value': rating['count']} for rating in Product_counts]
-    return HttpResponse(json.dumps(years_counts_dict), content_type="application/json")
+    """商品与评价数量折线图"""
+    # 改用评价数量替代年份统计
+    products = Product.objects.values('shop_type').annotate(
+        count=Count('id'),
+        avg_rate=Avg('d_rate_nums')
+    ).order_by('-count')
+    
+    data = [{
+        'key': item['shop_type'] or '其他',
+        'value': int(item['avg_rate'] or 0)
+    } for item in products]
+    
+    return JsonResponse(data, safe=False)
 
 # 词云分析
 def word_analysis(request):
     # 生成词云
-    build_wordcloud();
+    build_wordcloud()
     context = {'wordcloud_file': 'product_wordcloud.html'}
     return render(request, 'wordcloud.html', context)
 
@@ -480,27 +516,25 @@ def dashboard(request):
 
 #获取电商产品总量和标签总量
 def total_data(request):
-    # 获取电商产品总量
-    total_products = Product.objects.count()
-
-    # 获取标签总量
-    total_tags = Tags.objects.count()
-
-    # 获取自营店铺总量
-    total_self = Product.objects.filter(shop_type='自营').count()
-    # 获取非自营店铺总量
-    total_notself = Product.objects.filter(shop_type='非自营').count()
-
-    # 创建JSON对象
-    data = {
-        'total_products': total_products,
-        'total_tags': total_tags,
-        'total_self':total_self,
-        'total_notself':total_notself
-    }
-
-    # 返回JSON响应
-    return JsonResponse(data)
+    """核心数据统计"""
+    try:
+        df = read_csv_data()
+        if df is not None:
+            data = {
+                'total_products': len(df),
+                'total_tags': df['tag'].nunique(),
+                'total_self': len(df[df['shop_type'] == '自营']),
+                'total_notself': len(df[df['shop_type'] == '非自营']),
+                'avg_price': round(df['price'].mean(), 2),  # 平均价格
+                'avg_comments': round(df['comment_num'].mean(), 2), # 平均评论数
+                'max_price': df['price'].max(), # 最高价格
+                'min_price': df['price'].min(), # 最低价格
+                'total_shops': df['shop'].nunique() # 店铺总数
+            }
+            return JsonResponse(data)
+    except Exception as e:
+        print(f"Error in total_data: {e}")
+        return JsonResponse({'error': str(e)})
 
 # 各国电商产品数量分布图
 def country_analysis(request):
@@ -533,18 +567,91 @@ def country_analysis(request):
 
 # 自营店铺和非自营店铺比例
 def percent_analysis(request):
-    self_operated_stores = Product.objects.filter(shop_type='自营').count()
-    non_self_operated_stores = Product.objects.filter(shop_type='非自营').count()
+    """店铺类型占比分析"""
+    try:
+        df = read_csv_data()
+        if df is not None:
+            shop_types = df['shop_type'].value_counts()
+            
+            data = [
+                {'name': '自营', 'value': int(shop_types.get('自营', 0))},
+                {'name': '非自营', 'value': int(shop_types.get('非自营', 0))}
+            ]
+            return JsonResponse(data, safe=False)
+    except Exception as e:
+        print(f"Error in percent_analysis: {e}")
+        return JsonResponse([], safe=False)
 
-    data = [
-        {
-            'name':'自营',
-            'value':  self_operated_stores
-        },
-        {
-            'name': '非自营',
-            'value': non_self_operated_stores
-        }
-    ]
+# 价格区间分布分析
+def price_distribution(request):
+    """价格区间分布分析"""
+    try:
+        df = read_csv_data()
+        if df is not None:
+            # 定义价格区间
+            bins = [0, 100, 500, 1000, 5000, float('inf')]
+            labels = ['0-100', '100-500', '500-1000', '1000-5000', '5000以上']
+            df['price_range'] = pd.cut(df['price'], bins=bins, labels=labels)
+            price_dist = df['price_range'].value_counts()
+            
+            data = [{'name': str(name), 'value': int(value)} 
+                    for name, value in price_dist.items()]
+            return JsonResponse(data, safe=False)
+    except Exception as e:
+        return JsonResponse({'error': str(e)})
 
-    return JsonResponse(data, safe=False)
+# 店铺分析
+def shop_analysis(request):
+    """店铺分析"""  
+    try:
+        df = read_csv_data()
+        if df is not None:
+            # 店铺产品数量TOP10
+            shop_products = df.groupby('shop').size()
+            top_shops = shop_products.nlargest(10)
+            
+            # 店铺平均价格TOP10 
+            shop_prices = df.groupby('shop')['price'].mean()
+            top_prices = shop_prices.nlargest(10)
+            
+            data = {
+                'shop_products': [
+                    {'name': shop, 'value': int(count)}
+                    for shop, count in top_shops.items()
+                ],
+                'shop_prices': [
+                    {'name': shop, 'value': float(price)}
+                    for shop, price in top_prices.items() 
+                ]
+            }
+            # 打印一下数据格式
+            print("Shop prices data:", data)
+            return JsonResponse(data)
+    except Exception as e:
+        print(f"Error in shop_analysis: {e}")
+        return JsonResponse({'error': str(e)})
+
+def category_distribution(request):
+    """商品分类分布统计"""
+    try:
+        df = read_csv_data()
+        if df is not None:
+            category_counts = df['tag'].value_counts()
+            data = [{'name': cat, 'value': int(count)} 
+                   for cat, count in category_counts.items()]
+            return JsonResponse(data, safe=False)
+    except Exception as e:
+        return JsonResponse([], safe=False)
+
+def price_analysis(request):
+    """价格分析统计"""
+    try:
+        df = read_csv_data() 
+        if df is not None:
+            # 计算每个分类的平均价格
+            avg_prices = df.groupby('tag')['price'].mean()
+            data = [{'key': tag, 'value': round(float(price), 2)}
+                   for tag, price in avg_prices.items()]
+            return JsonResponse(data, safe=False)
+    except Exception as e:
+        return JsonResponse([], safe=False)

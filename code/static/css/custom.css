@@ -84,3 +84,188 @@ a:visited {
     margin-bottom: auto;
     display: block;
 }
+
+/* iOS风格评论区样式 */
+.comments-container {
+    margin: 30px 0;
+    padding: 20px;
+    background: #f5f5f7;
+    border-radius: 20px;
+}
+
+.comment-form {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.comment-input {
+    width: 100%;
+    border: none;
+    resize: none;
+    font-size: 16px;
+    color: #1d1d1f;
+    padding: 16px;
+    border-radius: 12px;
+    background: #f5f5f7;
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+}
+
+.comment-input:focus {
+    background: #fff;
+    box-shadow: 0 0 0 2px #0071e3;
+    outline: none;
+}
+
+.comment-submit {
+    background: #0071e3;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 500;
+    float: right;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.comment-submit:hover {
+    background: #0077ed;
+    transform: scale(1.02);
+}
+
+.comment-submit i {
+    margin-right: 6px;
+}
+
+.comments-list {
+    margin-top: 20px;
+}
+
+.comments-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.comments-title i {
+    margin-right: 8px;
+    color: #0071e3;
+}
+
+.comment-item {
+    display: flex;
+    padding: 20px;
+    background: #fff;
+    border-radius: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2); /* 加深阴影和扩大范围 */
+    transition: all 0.3s ease;
+}
+
+.comment-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25); /* 悬浮时进一步加深阴影 */
+}
+
+.comment-avatar {
+    margin-right: 16px;
+}
+
+.comment-avatar img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    margin-right: 15px;
+    border: 2px solid #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* 加深阴影 */
+    object-fit: cover;
+    background-color: #f5f5f7;
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* 添加过渡效果 */
+}
+
+.comment-avatar img:hover {
+    transform: translateY(-2px); /* 添加悬浮效果 */
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2); /* 悬浮时阴影更深 */
+}
+
+.comment-content {
+    flex: 1;
+}
+
+.comment-header {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.comment-author {
+    font-weight: 600;
+    color: #1d1d1f;
+    margin-right: 12px;
+}
+
+.comment-time {
+    color: #86868b;
+    font-size: 14px;
+}
+
+.comment-text {
+    color: #1d1d1f;
+    line-height: 1.5;
+    margin-bottom: 12px;
+    font-size: 15px;
+}
+
+.comment-actions {
+    display: flex;
+    align-items: center;
+}
+
+.like-btn {
+    display: flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 15px;
+    color: #86868b;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.like-btn i {
+    margin-right: 4px;
+    font-size: 16px;
+}
+
+.like-btn:hover {
+    background: #f5f5f7;
+    color: #ff3b30;
+}
+
+.like-btn.liked {
+    color: #ff3b30;
+}
+
+.no-comments {
+    text-align: center;
+    padding: 40px 0;
+    color: #86868b;
+}
+
+.no-comments i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    color: #0071e3;
+}
