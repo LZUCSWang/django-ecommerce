@@ -155,10 +155,9 @@ html, body {
 }
 
 body {
-    background: url(../images/bg.jpg) fixed;
-    color: #fff;
+    background: #ffffff;
+    color: #666666;
     font: 14px/25px Arial, Helvetica, sans-serif;
-    background-size: 100%;
 }
 
 body .wrap-body {

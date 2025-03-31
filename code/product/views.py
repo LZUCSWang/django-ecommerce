@@ -447,8 +447,8 @@ def item_recommend(request):
         # else:
         #     print('命中商品推荐缓存')
 
-    # 转换为JSON格式并随机打乱顺序
-    json_products = [product.to_dict(fields=['name', 'image_link', 'id', 'shop_name', 'd_rate_nums']) 
+    # 转换为JSON格式并随机打乱顺序 - 添加price字段
+    json_products = [product.to_dict(fields=['name', 'image_link', 'id', 'shop_name', 'd_rate_nums', 'price']) 
                     for product in product_list]
     random.shuffle(json_products)
     

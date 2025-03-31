@@ -269,3 +269,36 @@ a:visited {
     margin-bottom: 16px;
     color: #0071e3;
 }
+
+/* 添加这个规则到CSS文件底部 */
+body, html, .wrap-body {
+    background-color: #ffffff !important;
+    background-image: none !important;
+}
+
+#main-content, #sidebar, .wrap-container, .zerogrid {
+    background-color: #ffffff !important;
+}
+
+.wrap-container {
+    background: transparent;
+}
+
+/* 重置所有背景相关样式 */
+body, 
+html, 
+.wrap-body,
+#container,
+.wrap-container,
+#main-content,
+#sidebar,
+.zerogrid,
+.nav-container {
+    background-color: #ffffff !important;
+    background-image: none !important;
+}
+
+.wrap-header {
+    background: #ffffff;
+    border-bottom: 1px solid #f0f0f0;
+}

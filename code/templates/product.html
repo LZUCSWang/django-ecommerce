@@ -84,18 +84,18 @@
         </div>
     </div>
 
-    <div class="recommendations-section">
-        <div class="section-header">
-            <h2>
+    <div class="recommendations-section ios-card">
+        <div class="header-content">
+            <h2 class="ios-title">
                 <i class="fas fa-thumbs-up"></i>
                 基于物品推荐
             </h2>
-            <button class="refresh-button" onclick="get_item_recommend()">
+            <button class="ios-button secondary" onclick="get_item_recommend()">
                 <i class="fas fa-sync-alt"></i>
                 换一批
             </button>
         </div>
-        <div class="recommendations-grid" id="item-recommend">
+        <div class="products-grid" id="item-recommend">
             <!-- 推荐内容将通过JavaScript动态加载 -->
         </div>
     </div>
@@ -168,17 +168,22 @@
                 var array_length = result.length;
                 for (var i = 0; i < array_length; i++) {
                     html += `
-                        <div class="recommend-item">
-                            <div class="recommend-image">
-                                <a href="/product/${result[i].id}">
+                        <div class="product-card">
+                            <a href="/product/${result[i].id}">
+                                <div class="product-image">
                                     <img src="${result[i].image_link}" alt="${result[i].name}"/>
-                                </a>
-                            </div>
-                            <div class="recommend-info">
-                                <a href="/product/${result[i].id}" title="${result[i].name}">
-                                    <h3>${result[i].name.substring(0, 20)}</h3>
-                                </a>
-                            </div>
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-title">${result[i].name.substring(0, 24)}</h3>
+                                    <div class="product-meta">
+                                        <span class="product-price">￥${result[i].price || 0}</span>
+                                        <span class="ios-tag">
+                                            <i class="fas fa-star"></i>
+                                            ${result[i].d_rate_nums || 0}
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
                     `;
                 }

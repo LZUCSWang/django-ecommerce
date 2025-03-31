@@ -155,13 +155,15 @@ html, body {
 }
 
 body {
-    background: url(../images/bg.jpg) fixed;
+    background: none;  /* 删除或覆盖原有的 background 设置 */
+    background-color: #ffffff !important;
     color: #fff;
     font: 14px/25px Arial, Helvetica, sans-serif;
-    background-size: 100%;
 }
 
 body .wrap-body {
+    background: none;  /* 删除或覆盖原有的 background 设置 */
+    background-color: #ffffff !important;
 }
 
 /* ---------------------------------------------------------------------------- */
@@ -247,6 +249,8 @@ header {
 }
 
 header .wrap-header {
+    background: none;  /* 删除或覆盖原有的 background 设置 */
+    background-color: #ffffff !important;
 }
 
 header .wrap-header ul li {
@@ -349,9 +353,13 @@ header .nav-bar .wrap-nav {
 /* -------------------------------------Container------------------------------ */
 /* ---------------------------------------------------------------------------- */
 #container {
+    background: none;
+    background-color: #ffffff !important;
 }
 
 #container .wrap-container {
+    background: none;  /* 删除或覆盖原有的 background 设置 */
+    background-color: #ffffff !important;
 }
 
 /* ---MainContent-Article--- */

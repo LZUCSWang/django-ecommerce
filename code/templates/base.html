@@ -20,7 +20,7 @@
     <script src="{% static "/js/bootstrap.min.js" %}"></script>
     <script src="{% static "/js/echarts.js" %}"></script>
 </head>
-<body>
+<body style="background-color: #ffffff !important;">
 <div class="wrap-body">
     <header>
         <div class="wrap-header zerogrid">
@@ -52,9 +52,13 @@
             <div class="row nav-container">
                 <nav class="ios-nav">
                     <ul class="ios-nav-list">
-                        <li><a href="{% url 'index' %}" class="ios-nav-item active">首页</a></li>
+                        <li><a href="{% url 'index' %}" class="ios-nav-item active">
+                            <i class="fas fa-home"></i>
+                            首页
+                        </a></li>
                         <li class="nav-dropdown">
                             <div class="dropdown-trigger ios-nav-item">
+                                <i class="fas fa-tags"></i>
                                 <span>电商产品标签</span>
                                 <i class="fas fa-chevron-down"></i>
                             </div>
@@ -64,15 +68,39 @@
                                 {% endfor %}
                             </div>
                         </li>
-                        <li><a href="{% url 'data_analysis' %}" class="ios-nav-item">数据分析</a></li>
-                        <li><a href="{% url 'word_analysis' %}" class="ios-nav-item">词云分析</a></li>
+                        <li><a href="{% url 'data_analysis' %}" class="ios-nav-item">
+                            <i class="fas fa-chart-bar"></i>
+                            数据分析
+                        </a></li>
+                        <li><a href="{% url 'word_analysis' %}" class="ios-nav-item">
+                            <i class="fas fa-cloud"></i>
+                            词云分析
+                        </a></li>
                         {% if request.session.login_in == True %}
-                            <li><a href="{% url 'personal' %}" class="ios-nav-item">{{ request.session.name }}</a></li>
-                            <li><a href="{% url 'logout' %}" class="ios-nav-item">退出登录</a></li>
+                            <li><a href="{% url 'personal' %}" class="ios-nav-item">
+                                <i class="fas fa-user"></i>
+                                {{ request.session.name }}
+                            </a></li>
+                            <li><a href="{% url 'logout' %}" class="ios-nav-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                退出登录
+                            </a></li>
                         {% else %}
-                            <li><a href="{% url 'login' %}" class="ios-nav-item">登录</a></li>
-                            <li><a href="{% url 'register' %}" class="ios-nav-item">注册</a></li>
+                            <li><a href="{% url 'login' %}" class="ios-nav-item">
+                                <i class="fas fa-sign-in-alt"></i>
+                                登录
+                            </a></li>
+                            <li><a href="{% url 'register' %}" class="ios-nav-item">
+                                <i class="fas fa-user-plus"></i>
+                                注册
+                            </a></li>
                         {% endif %}
+                        <li>
+                            <a href="/admin/" class="ios-nav-item">
+                                <i class="fas fa-cogs"></i>
+                                后台管理
+                            </a>
+                        </li>
                     </ul>
                 </nav>
             </div>
