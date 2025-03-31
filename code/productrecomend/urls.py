@@ -59,20 +59,8 @@ urlpatterns = [
                   # path("comment_trend/", views.comment_trend, name="comment_trend"),
                   path("tags_analysis/", views.tags_analysis, name="tags_analysis"),#电商产品表统计
                   path("years_analysis/", views.years_analysis, name="years_analysis"),#电商产品上映年份及数量统计
-                  path("years_analysis_dash/", views.years_analysis_dash, name="years_analysis_dash"),#电商产品上映年份及数量统计，大屏使用
                   path("word_analysis/", views.word_analysis, name="word_analysis"),#电商产品标签词云分析
-                  path("dashboard/", views.dashboard, name="dashboard"),#大屏看板
-                  path("total_data/", views.total_data, name="total_data"),#查看总量
-                  path("country_analysis/", views.country_analysis, name="country_analysis"),#各国电商产品分布
-                  path("percent_analysis/", views.percent_analysis, name="percent_analysis"),#各国电商产品分布
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS)
-
-urlpatterns += [
-    path('price_distribution/', views.price_distribution, name='price_distribution'),
-    path('shop_analysis/', views.shop_analysis, name='shop_analysis'),
-    path('category_distribution/', views.category_distribution, name='category_distribution'),
-    path('price_analysis/', views.price_analysis, name='price_analysis'),
-]
 
 admin.site.site_header = '跨境电商产品推荐与展示系统'
 admin.site.index_title = '首页-跨境电商产品推荐与展示系统'
