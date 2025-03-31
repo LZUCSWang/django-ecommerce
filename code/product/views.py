@@ -443,28 +443,21 @@ def item_recommend(request):
 
 # 数据分析
 
-def read_csv_data():
-    """读取产品CSV数据"""
-    csv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'csv_data', 'product.csv')
-    try:
-        df = pd.read_csv(csv_path)
-        return df
-    except Exception as e:
-        print(f"Error reading CSV: {e}")
-        return None
-
-# 电商产品表统计图
+# 电商产品标签统计图
 def tags_analysis(request): 
     """商品分类统计"""
     try:
-        df = read_csv_data()
-        if df is not None:
-            # 统计各标签数量
-            tag_counts = df['tag'].value_counts()
-            
-            data = [{'name': tag, 'value': int(count)}
-                    for tag, count in tag_counts.items()]
-            return JsonResponse(data, safe=False)
+        # 统计每个标签下的商品数量
+        tag_counts = Tags.objects.annotate(
+            count=Count('product')  # 统计每个标签关联的商品数
+        ).values('name', 'count')
+        
+        data = [{
+            'name': item['name'], 
+            'value': item['count']
+        } for item in tag_counts]
+        
+        return JsonResponse(data, safe=False)
     except Exception as e:
         print(f"Error in tags_analysis: {e}")
         return JsonResponse([], safe=False)
@@ -473,18 +466,42 @@ def tags_analysis(request):
 def years_analysis(request):
     """返回各品类平均价格"""
     try:
-        df = read_csv_data()
-        if df is not None:
-            # 计算各标签的平均价格
-            avg_prices = df.groupby('tag')['price'].mean()
-            
-            data = [{
-                'key': tag,
-                'value': round(float(price), 2)
-            } for tag, price in avg_prices.items()]
-            return JsonResponse(data, safe=False)
+        # 计算每个标签下商品的平均价格
+        tag_prices = Tags.objects.annotate(
+            avg_price=Avg('product__price')  # 计算关联商品的平均价格
+        ).values('name', 'avg_price')
+        
+        data = [{
+            'key': item['name'],
+            'value': round(float(item['avg_price'] or 0), 2)  # 处理null值
+        } for item in tag_prices]
+        
+        return JsonResponse(data, safe=False)
     except Exception as e:
         print(f"Error in years_analysis: {e}")
+        return JsonResponse([], safe=False)
+
+# 评价排名前10图
+def comment_analysis(request):
+    """返回评价数量(d_rate_nums)排名前10的店铺"""
+    try:
+        # 按店铺分组并计算评价总数(使用d_rate_nums)
+        shops = Product.objects.values('shop_name')\
+            .annotate(
+                total_comments=Sum('d_rate_nums')  # 使用Sum聚合d_rate_nums列
+            )\
+            .order_by('-total_comments')[:10]  # 取评价数最多的10个店铺
+        
+        response = [{
+            'key': item['shop_name'],
+            'value': item['total_comments']
+        } for item in shops]
+        
+        print("Top 10 shops by d_rate_nums:", response)  # 调试输出
+        return JsonResponse(response, safe=False)
+        
+    except Exception as e:
+        print(f"Error in comment_analysis: {e}")
         return JsonResponse([], safe=False)
 
 # 词云分析

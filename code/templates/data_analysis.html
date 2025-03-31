@@ -17,11 +17,14 @@
                                 <script type="text/javascript">
 
                                     function showComment(){
+                                        console.log("开始加载评价排名数据...");  // 添加调试日志
                                         $.ajax({
                                             url: '/comment_analysis/',
                                             type: 'GET',
                                             success: function (result) {
-                                                  var myChart = echarts.init(document.getElementById('ert'));
+                                                console.log("收到数据:", result);  // 添加调试日志
+                                                var myChart = echarts.init(document.getElementById('ert'));
+                                                console.log("图表初始化完成");  // 添加调试日志
 
                                                   var option = {
                                                     title: {

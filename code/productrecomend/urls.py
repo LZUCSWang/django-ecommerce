@@ -54,8 +54,7 @@ urlpatterns = [
                   path("choose_tags/", views.choose_tags, name="choose_tags"),
                   path("user_recommend/", views.user_recommend, name="user_recommend"),#用户推荐
                   path("item_recommend/", views.item_recommend, name="item_recommend"),#物品推荐
-                  # 删除以下两行:
-                  # path("comment_analysis/", views.comment_analysis, name="comment_analysis"),#评分分布统计
+                  path("comment_analysis/", views.comment_analysis, name="comment_analysis"),#评分分布统计
                   # path("comment_trend/", views.comment_trend, name="comment_trend"),
                   path("tags_analysis/", views.tags_analysis, name="tags_analysis"),#电商产品表统计
                   path("years_analysis/", views.years_analysis, name="years_analysis"),#电商产品上映年份及数量统计
