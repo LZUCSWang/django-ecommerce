@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/comments.css' %}">
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
           crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -23,50 +24,57 @@
 <div class="wrap-body">
     <header>
         <div class="wrap-header zerogrid">
-            <div class="row">
+            <div class="row header-content">
                 <div class="col-1-2">
                     <div class="wrap-col">
-                        <div class="logo" style="font-size: 33px;padding: 16px 0;font-family: sans-serif; ">
-                            <a href="/" style="color: black">跨境电商产品推荐与展示系统</a>
+                        <div class="logo">
+                            <a href="/" class="site-title">跨境电商产品推荐与展示系统</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-1-2">
-                    <div class="wrap-col f-right">
-                        <form method="post" action="{% url 'search' %}" id="search">
+                    <div class="wrap-col">
+                        <form method="post" action="{% url 'search' %}" id="search" class="search-container">
                             {% csrf_token %}
-                            <input name="search" type="text" size="40" placeholder="搜索..."/>
-                            <input type="submit" value="搜索">
+                            <input name="search" 
+                                   type="text" 
+                                   class="ios-search" 
+                                   placeholder="搜索商品..."
+                                   required/>
+                            <button type="submit" class="search-button">
+                                <i class="fas fa-search"></i>
+                                搜索
+                            </button>
                         </form>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div id="menu">
-                    <nav>
-                        <div class="wrap-nav">
-                            <ul>
-                                <li class="active"><a href= {% url 'index' %}>首页</a></li>
-                                <li class="active"><a href= {% url 'all_tags' %}>电商产品标签</a></li>
-                                <li class="active"><a href= {% url 'data_analysis' %}>数据分析</a></li>
-                                <li class="active"><a href= {% url 'word_analysis' %}>词云分析</a></li>
-                                {% if request.session.login_in == True %}
-                                    <li><a href="{% url 'personal' %}">{{ request.session.name }}</a></li>
-                                    <li><a href="{% url 'logout' %}">退出登录</a></li>
-                                {% else %}
-                                    {{ request.session.login_in }}
-                                    <li class="active"><a href= {% url 'login' %}>登录</a></li>
-                                    <li class="active"><a href= {% url 'register' %}>注册</a></li>
-                                    {#                                    <li><a href="{% url 'clear_cache' %}">清除缓存</a></li>#}
-                                {% endif %}
-
-{#                               <li class="active"><a href= {% url 'admin' %}>后台管理</a></li>#}
-
-                                <li class="active"><a href="http://127.0.0.1:8000/admin/login/?next=/admin/">后台管理</a></li>
-                            </ul>
-                        </div>
-                    </nav>
-                </div>
+            <div class="row nav-container">
+                <nav class="ios-nav">
+                    <ul class="ios-nav-list">
+                        <li><a href="{% url 'index' %}" class="ios-nav-item active">首页</a></li>
+                        <li class="nav-dropdown">
+                            <div class="dropdown-trigger ios-nav-item">
+                                <span>电商产品标签</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="dropdown-menu">
+                                {% for tag in all_tags %}
+                                    <a href="{% url 'one_tag' tag.id %}" class="dropdown-item">{{ tag.name }}</a>
+                                {% endfor %}
+                            </div>
+                        </li>
+                        <li><a href="{% url 'data_analysis' %}" class="ios-nav-item">数据分析</a></li>
+                        <li><a href="{% url 'word_analysis' %}" class="ios-nav-item">词云分析</a></li>
+                        {% if request.session.login_in == True %}
+                            <li><a href="{% url 'personal' %}" class="ios-nav-item">{{ request.session.name }}</a></li>
+                            <li><a href="{% url 'logout' %}" class="ios-nav-item">退出登录</a></li>
+                        {% else %}
+                            <li><a href="{% url 'login' %}" class="ios-nav-item">登录</a></li>
+                            <li><a href="{% url 'register' %}" class="ios-nav-item">注册</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
             </div>
         </div>
     </header>
@@ -79,38 +87,47 @@
             </div>
             <div id="sidebar" class="col-1-3">
                 <div class="wrap-sidebar">
-                    <!---- Start Widget ---->
-                    <div class="widget wid-new-updates">
-                        <div class="wid-header">
-                            <h5>最近更新</h5>
-                        </div>
-                        <div class="wid-content">
-                            <ul id="latest-product">
+                    <div class="ios-card">
+                        <h5 class="ios-title">
+                            <i class="fas fa-clock"></i>
+                            最近更新
+                        </h5>
+                        <div class="ios-list">
+                            <div id="latest-product">
                                 {% for product in new_list %}
-                                    <li><a href="{% url 'product' product.id %}">{{ product.name | slice:":18"}}</a><span><img src="/static/images/hot.png"/></span></li>
+                                    <div class="ios-list-item">
+                                        <a href="{% url 'product' product.id %}">{{ product.name | slice:":18"}}</a>
+                                        <span class="ios-badge">新</span>
+                                    </div>
                                 {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                    <!---- Start Widget ---->
-                    <div class="widget wid-last-updates">
-                        <div class="wid-header">
-                            <div class="row">
-                                <div class="col-md-9">
-                                    <h5> 基于用户推荐电商产品</h5>
-                                </div>
-                                <div class="col-md-3">
-                                    <a style="color: white" onclick="get_user_recommend()" href="#" class="btn btn-warning">换一批</a>
-                                </div>
                             </div>
                         </div>
-                        <div class="wid-content" id="user-recommend">
+                    </div>
+
+                    <div class="ios-card">
+                        <div class="ios-title">
+                            <i class="fas fa-thumbs-up"></i>
+                            基于用户推荐
+                            <button onclick="get_user_recommend()" class="ios-button secondary">
+                                <i class="fas fa-sync-alt"></i>
+                                换一批
+                            </button>
+                        </div>
+                        <div id="user-recommend" class="ios-list">
                             {% for product in user_recommend_list %}
-                                <div class="post">
-                                    <div class="wrapper">
-                                        <a href="{% url 'product' product.id %}"><h6>{{ product.name | slice:":24"}}</h6></a>
-                                        <p style="color: #646fb0">{{ product.shop_name }}</p>
-                                        <a href="{% url 'product' product.id %}" style="color: #646fb0">评价：{{ product.d_rate_nums }}</a>
+                                <div class="ios-list-item">
+                                    <div class="item-content">
+                                        <a href="{% url 'product' product.id %}">{{ product.name | slice:":24"}}</a>
+                                        <div class="meta">
+                                            <span class="ios-tag">
+                                                <i class="fas fa-store"></i>
+                                                {{ product.shop_name }}
+                                            </span>
+                                            <span class="ios-tag">
+                                                <i class="fas fa-star"></i>
+                                                评价：{{ product.d_rate_nums }}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             {% endfor %}
@@ -144,16 +161,33 @@
             success: function (result) {
                 var html = "";
                 var array_length = result.length;
-               for (var i = 0; i < array_length; i++) {
-                    html += `<div class="post">\n` +
-                        `<a href="/product/${result[i].id}"><img src="${result[i].image_link}"/></a>` +
-                        `<div class="wrapper"><a href="/product/${result[i].id}"><h6>${result[i].name.substring(0, 24)}</h6></a>`
-                        + `<p style="color: #646fb0"> ${result[i].shop_name}</p>`
-                        + `<a href="/product/${result[i].id}" style="color: #646fb0">评价：${result[i].d_rate_nums}</a>\n</div>`
-                    ;
+                for (var i = 0; i < array_length; i++) {
+                    html += `
+                        <div class="post">
+                            <div class="image-container">
+                                <a href="/product/${result[i].id}">
+                                    <img src="${result[i].image_link}" alt="${result[i].name}"/>
+                                </a>
+                            </div>
+                            <div class="wrapper">
+                                <a href="/product/${result[i].id}">
+                                    <h6>${result[i].name.substring(0, 24)}</h6>
+                                </a>
+                                <div class="meta">
+                                    <span class="ios-tag">
+                                        <i class="fas fa-store"></i>
+                                        ${result[i].shop_name}
+                                    </span>
+                                    <span class="ios-tag">
+                                        <i class="fas fa-star"></i>
+                                        评价：${result[i].d_rate_nums}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
                 }
                 $('#user-recommend').html(html);
-                {#console.log(html);#}
             },
             fail: function (xhr, textStatus, errorThrown) {
                 alert('request failed');

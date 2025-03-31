@@ -2,98 +2,105 @@
 {% load grav_tag %}
 {% load is_like %}
 {% block main_content %}
-    <div class="wrap-content movie">
-        <article>
-            <div class="art-header">
-                <div class="row">
-                    <div class="col-md-3 " style="margin-bottom: 10px ;margin-top: 10px">
-                        <img src="{{ MEDIA_URL }}{{ product.image_link }}"/>
+    <div class="product-showcase">
+        <div class="product-header">
+            <div class="product-image">
+                <img src="{{ MEDIA_URL }}{{ product.image_link }}" alt="{{ product.name }}"/>
+            </div>
+            <div class="product-details">
+                <h1 class="product-title">{{ product.name }}</h1>
+                <div class="product-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-store"></i>
+                        {{ product.shop_name }}
                     </div>
-                    <div class="col-md-9">
-                        <div class="wrap-col" style="overflow: auto">
-                            <ul class="movie-info" style="overflow: auto">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p style="font-size: 16px;color: #666666;">{{ product.name }}</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p style="font-size: 16px;color: #666666;">{{ product.shop_name }}</p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p style="color:#e4393c;font-size: 16px;">{{ product.price }}</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p style="color: #666666;;font-size: 16px;">店铺类型: {{ product.shop_type}}</p>
-                                    </div>
-                                </div>
-                                <li>
-                                    <div class="row">
-                                        <div class="col-1-3">
-                                            <a target="_blank" style="display: inline-block; margin-left: 15px" class="btn-lg btn-success" href="{{ product.origin_product_link }}">前往购买</a>
-                                        </div>
-                                        <div class="col-1-3">
-                                            {% if is_collect %}
-                                                <a class="btn-lg btn-warning" style="display: inline-block" href="{% url 'decollect' product.id %}">取消收藏</a>
-                                            {% else %}
-                                                <a class="btn-lg btn-primary" style="display: inline-block" href="{% url 'collect' product.id %}">点击收藏</a>{% endif %}
-                                        </div>
-                                        <div class="col-1-3">
-                                            <h2 style="display: inline"> 收藏人数:{{ product.collect.count }} </h2>
-                                        </div>
-                                        {#                                            <a style="display: inline-block" class="btn-lg btn-primary" href="{% url 'collect' movie.id %}">收藏</a>#}
-                                    </div>
-                                <li>
-                                </li>
-                                <li style="margin-top: 20px"><p style="display: inline-block; margin-right: 15px;font-size: 16px;color: #666666;">评价: {{ product.d_rate_nums }}</p>
-                                    <p style="display: inline-block">标签： {% for tag in product.tags.all %}  <a href="{% url 'one_tag' tag.id %}">{{ tag.name }}</a>{% endfor %}</p>
-                                </li>
-                                <li style="margin-top: 20px">
-                                    {% if user_rate is not None %}
-                                        <h4 style="color: #666666;font-size: 18px;">您已对当前电商产品打过分: {{ user_rate.mark }}</h4>
-                                    {% else %}
-                                        <form action="{% url 'score' product.id %}" method="post">
-                                            {% csrf_token %}
-                                            <p style="display: inline-block;"> 添加评分</p>
-                                            <select name="score">
-                                                <option>1.0</option>
-                                                <option>2.0</option>
-                                                <option>3.0</option>
-                                                <option>4.0</option>
-                                                <option>5.0</option>
-                                            </select>
-                                            <button type="submit" class="button bt1">提交</button>
-                                        </form>
-                                    {% endif %}
-                                </li>
-                                                            <div class="clear"></div>
+                    <div class="meta-item">
+                        <i class="fas fa-shopping-bag"></i>
+                        {{ product.shop_type }}
+                    </div>
+                    <div class="meta-item price">
+                        <i class="fas fa-yen-sign"></i>
+                        {{ product.price }}
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-star"></i>
+                        评价: {{ product.d_rate_nums }}
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="{{ product.origin_product_link }}" target="_blank" class="action-button primary">
+                        <i class="fas fa-shopping-cart"></i>
+                        前往购买
+                    </a>
+                    {% if is_collect %}
+                        <a href="{% url 'decollect' product.id %}" class="action-button warning">
+                            <i class="fas fa-star"></i>
+                            取消收藏
+                        </a>
+                    {% else %}
+                        <a href="{% url 'collect' product.id %}" class="action-button secondary">
+                            <i class="far fa-star"></i>
+                            点击收藏
+                        </a>
+                    {% endif %}
+                    <div class="collect-count">
+                        <i class="fas fa-users"></i>
+                        收藏人数: {{ product.collect.count }}
+                    </div>
+                </div>
 
-                            </ul>
-                        </div>
+                <div class="tags-section">
+                    <div class="meta-item">
+                        标签：
+                        {% for tag in product.tags.all %}
+                            <a href="{% url 'one_tag' tag.id %}" class="tag">{{ tag.name }}</a>
+                        {% endfor %}
                     </div>
                 </div>
-            </div>
-                        <div class="clear"></div>
-        </article>
-        <div class="widget wid-related">
-            <div class="wid-header">
-                <div class="row">
-                    <div class="col-md-9">
-                        <h5>基于物品推荐电商产品</h5>
+
+                {% if user_rate is not None %}
+                    <div class="meta-item rating-display">
+                        <i class="fas fa-star"></i>
+                        您已评分: {{ user_rate.mark }}
                     </div>
-                    <div class="col-md-3">
-                        <button class="button bt1" onclick="get_item_recommend()">换一批</button>
-                    </div>
-                </div>
-            </div>
-            <div class="wid-content">
-                <div class="row" id="item-recommend">
-                </div>
+                {% else %}
+                    <form action="{% url 'score' product.id %}" method="post" class="rating-form">
+                        {% csrf_token %}
+                        <select name="score" class="score-select">
+                            <option>1.0</option>
+                            <option>2.0</option>
+                            <option>3.0</option>
+                            <option>4.0</option>
+                            <option>5.0</option>
+                        </select>
+                        <button type="submit" class="action-button secondary">
+                            <i class="fas fa-star"></i>
+                            提交评分
+                        </button>
+                    </form>
+                {% endif %}
             </div>
         </div>
     </div>
-    <div style="margin: 20px 20px 20px 0px" class="movie">
+
+    <div class="recommendations-section">
+        <div class="section-header">
+            <h2>
+                <i class="fas fa-thumbs-up"></i>
+                基于物品推荐
+            </h2>
+            <button class="refresh-button" onclick="get_item_recommend()">
+                <i class="fas fa-sync-alt"></i>
+                换一批
+            </button>
+        </div>
+        <div class="recommendations-grid" id="item-recommend">
+            <!-- 推荐内容将通过JavaScript动态加载 -->
+        </div>
+    </div>
+
+    <div class="movie">
         <div class="comments-container">
             <!-- 评论输入框 -->
             <div class="comment-form">
@@ -144,29 +151,36 @@
             </div>
         </div>
     </div>
-
 {% endblock %}
 
 {% block bottom-js %}
 <script>
     function get_item_recommend() {
-        // 从页面上下文获取当前商品ID 
-        var current_product_id = "{{ product.id }}";  // 使用Django模板变量
-        console.log("Current product ID:", current_product_id); // 调试输出
-        
+        var current_product_id = "{{ product.id }}";
         $.ajax({
             url: '/item_recommend/',
             type: 'GET',
             data: {
-                'product_id': current_product_id  // 确保参数名匹配
+                'product_id': current_product_id
             },
             success: function(result) {
                 var html = "";
                 var array_length = result.length;
                 for (var i = 0; i < array_length; i++) {
-                    html += `<div class="col-1-3"><div class="wrap-col">` +
-                        `<a href="/product/${result[i].id}"><img src="${result[i].image_link}"/></a>` +
-                        `<a href="/product/${result[i].id}" title="${result[i].name}"><h3>${result[i].name.substring(0, 20)}</h3></a></div></div>`;
+                    html += `
+                        <div class="recommend-item">
+                            <div class="recommend-image">
+                                <a href="/product/${result[i].id}">
+                                    <img src="${result[i].image_link}" alt="${result[i].name}"/>
+                                </a>
+                            </div>
+                            <div class="recommend-info">
+                                <a href="/product/${result[i].id}" title="${result[i].name}">
+                                    <h3>${result[i].name.substring(0, 20)}</h3>
+                                </a>
+                            </div>
+                        </div>
+                    `;
                 }
                 $('#item-recommend').html(html);
             }

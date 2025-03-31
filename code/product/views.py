@@ -123,6 +123,14 @@ def login_in(func):  # 验证用户是否登录
 
 
 # Create your views here.
+def get_base_context(request):
+    """获取基础模板需要的上下文数据"""
+    context = {}
+    all_tags = Tags.objects.all()
+    context['all_tags'] = all_tags
+    return context
+
+
 def index(request):
     order = request.POST.get("order") or request.session.get('order')
     request.session['order'] = order
@@ -140,7 +148,13 @@ def index(request):
     new_list = Product.objects.all()[:20]
     current_page = request.GET.get("page", 1)
     products = paginator.page(current_page)
-    return render(request, 'items.html', {'products': products, 'new_list': new_list, 'title': title})
+    context = {
+        'products': products, 
+        'new_list': new_list, 
+        'title': title
+    }
+    context.update(get_base_context(request))
+    return render(request, 'items.html', context)
 
 
 # 电商产品详情
@@ -162,7 +176,9 @@ def product(request, product_id):
     for comment in comments:
         print(f"User email: {comment.user.email}")
         print(f"Gravatar URL: {gravatar(comment.user.email, size=48)}")
-    return render(request, "product.html", locals())
+    context = locals()
+    context.update(get_base_context(request))
+    return render(request, "product.html", context)
 
 
 def search(request):  # 搜索
