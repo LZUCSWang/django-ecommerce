@@ -425,6 +425,8 @@
     border: none; /* 移除边框 */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* 添加阴影效果 */
     /* 移除overflow: hidden，它会裁剪下拉菜单 */
+    margin-bottom: 0; /* 移除底部间距 */
+    border-radius: 12px 12px 0 0; /* 只保留顶部圆角 */
 }
 
 .ios-nav {
@@ -446,6 +448,7 @@
     background: transparent;
 }
 
+/* 修改导航项样式 */
 .ios-nav-item {
     position: relative;
     font-size: 15px;
@@ -457,13 +460,14 @@
     background: transparent;
     white-space: nowrap;
     font-weight: 500;
-    text-align: center; /* 文字居中 */
-    flex: 1; /* 让每个项目占据相同宽度 */
-    max-width: 160px; /* 限制最大宽度 */
-    display: flex; /* 更改为flex布局 */
-    align-items: center; /* 垂直居中对齐 */
-    gap: 6px; /* 图标和文字之间的间距 */
-    justify-content: center; /* 内容居中 */
+    text-align: center;
+    flex: 1;
+    max-width: 160px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+    position: relative; /* 确保相对定位 */
 }
 
 .ios-nav-item i {
@@ -518,6 +522,8 @@
     padding-right: 24px;
     position: relative;
     justify-content: center; /* 内容居中 */
+    pointer-events: none; /* 禁用点击 */
+    cursor: default;
 }
 
 .dropdown-trigger i:first-of-type {
@@ -530,6 +536,7 @@
 .dropdown-trigger i:last-of-type {
     /* 对最后一个图标(下拉箭头)进行定位 */
     /* 保持原有的定位方式 */
+    display: none;
 }
 
 .dropdown-trigger i {
@@ -541,21 +548,22 @@
     transition: transform 0.2s ease;
 }
 
+/* 修改下拉菜单样式 */
 .dropdown-menu {
-    position: absolute;
-    top: calc(100% + 8px); /* 调整位置，确保不会被裁剪 */
-    left: 0;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    padding: 8px 0;
-    margin-top: 4px;
-    min-width: 200px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: all 0.2s ease;
-    z-index: 1001;
+    position: static; /* 改为静态定位，不再弹出 */
+    opacity: 1; /* 始终可见 */
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    min-width: 100%; /* 占满容器宽度 */
+    padding: 16px 24px;
+    margin: 16px 0 0 0;
+    background: #f5f5f7;
+    border-radius: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    transition: none;
 }
 
 /* 调整下拉菜单显示逻辑 */
@@ -567,18 +575,70 @@
 }
 
 .dropdown-item {
-    display: block;
-    padding: 10px 16px;
+    flex: 0 0 auto; /* 防止项目被压缩 */
+    padding: 8px 16px;
+    white-space: nowrap; /* 文本不换行 */
     color: #1c1c1e;
     font-size: 14px;
     text-decoration: none;
     transition: all 0.2s ease;
-    white-space: nowrap;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.dropdown-item:hover {
-    background: rgba(0, 122, 255, 0.1);
-    color: #007AFF;
+/* 修改下拉菜单样式 */
+.dropdown-menu {
+    position: static; /* 改为静态定位，不再弹出 */
+    opacity: 1; /* 始终可见 */
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    min-width: 100%; /* 占满容器宽度 */
+    padding: 16px 24px;
+    margin: 16px 0 0 0;
+    background: #f5f5f7;
+    border-radius: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    transition: none;
+}
+
+/* 显示下拉菜单时的样式 */
+.nav-dropdown.active .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* 修改导航项样式 */
+.dropdown-trigger {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    width: 100%;
+    justify-content: center;
+}
+
+/* 添加箭头旋转动画 */
+.nav-dropdown.active .dropdown-trigger i:last-child {
+    transform: rotate(180deg);
+}
+
+/* 下拉菜单项样式 */
+.dropdown-item {
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* 主内容区域样式优化 */
@@ -774,20 +834,20 @@
 
 /* 下拉菜单 */
 .dropdown-menu {
-    position: absolute;
-    top: calc(100% + 8px); /* 调整位置，确保不会被裁剪 */
-    left: 0;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    padding: 8px 0;
-    margin-top: 8px;
-    min-width: 200px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: all 0.3s ease;
-    z-index: 1001;
+    position: static; /* 改为静态定位，不再弹出 */
+    opacity: 1; /* 始终可见 */
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    min-width: 100%; /* 占满容器宽度 */
+    padding: 16px 24px;
+    margin: 16px 0 0 0;
+    background: #f5f5f7;
+    border-radius: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    transition: none;
 }
 
 /* 显示下拉菜单 */
@@ -805,11 +865,9 @@
     font-size: 14px;
     text-decoration: none;
     transition: all 0.2s ease;
-}
-
-.dropdown-item:hover {
-    background: rgba(0, 122, 255, 0.1);
-    color: #007AFF;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 /* 基于物品推荐的iOS风格样式 */
@@ -923,4 +981,56 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     padding: 10px 0;
+}
+
+/* 添加新的标签区域容器 */
+.tags-section {
+    background: #f5f5f7;
+    padding: 0 0 16px 0;
+    margin-bottom: 16px;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* 标签区域容器 */
+.tags-section {
+    width: 100%;
+    background: #f5f5f7;
+    padding: 20px 0;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.tags-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: flex-start;
+}
+
+.tag-item {
+    padding: 8px 16px;
+    background: #ffffff;
+    border-radius: 8px;
+    color: #1c1c1e;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tag-item:hover {
+    background: rgba(0, 122, 255, 0.1);
+    color: #007AFF;
+    transform: translateY(-1px);
+}
+
+/* 移除原有的下拉菜单相关样式 */
+.dropdown-menu,
+.nav-dropdown .dropdown-menu,
+.dropdown-trigger i:last-child {
+    display: none;
 }
